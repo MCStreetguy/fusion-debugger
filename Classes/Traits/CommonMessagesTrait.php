@@ -1,5 +1,5 @@
 <?php
-namespace Concept\Toolbox\Traits\Command;
+namespace MCStreetguy\FusionLinter\Traits;
 
 /**
  * This file is part of the Concept.Toolbox package.

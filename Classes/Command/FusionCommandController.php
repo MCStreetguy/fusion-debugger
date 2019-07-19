@@ -5,7 +5,7 @@ namespace MCStreetguy\FusionLinter\Command;
  * This file is part of the MCStreetguy.FusionLinter package.
  */
 
-use Concept\Toolbox\Traits\Command\CommonMessagesTrait;
+use MCStreetguy\FusionLinter\Traits\CommonMessagesTrait;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Mvc\Controller\Exception\InactivePackageException;
