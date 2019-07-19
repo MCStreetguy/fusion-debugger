@@ -2,6 +2,22 @@
     "name": "mcstreetguy/fusion-linter",
     "type": "neos-plugin",
     "description": "A simple linter command for debugging Fusion code.",
+    "license": "MIT",
+    "readme": "README.md",
+    "authors": [
+        {
+            "name": "Maximilian Schmidt",
+            "email": "maximilianschmidt404@gmail.com",
+            "role": "Lead Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/MCStreetguy/fusion-linter",
+        "issues": "https://github.com/MCStreetguy/fusion-linter/issues",
+        "docs": "https://flowframework.readthedocs.io/en/4.3/",
+        "chat": "https://slack.neos.io/",
+        "email": "maximilianschmidt404@gmail.com"
+    },
     "require": {
         "neos/flow": "^4.3.0",
         "neos/fusion": "*"
