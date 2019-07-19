@@ -44,8 +44,6 @@ class FusionCommandController extends CommandController
     public function initializeObject()
     {
         $this->fusionView = new DebugFusionView([
-            'fusionPathPatterns' => ['resource://@package/Private/Fusion'],
-            'fusionPath' => '/root',
             'debugMode' => true,
             'enableContentCache' => false,
         ]);
