@@ -31,5 +31,8 @@
         "neos": {
             "package-key": "MCStreetguy.FusionLinter"
         }
+    },
+    "require-dev": {
+        "kint-php/kint": "^3.2"
     }
 }

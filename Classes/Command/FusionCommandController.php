@@ -8,10 +8,9 @@ namespace MCStreetguy\FusionLinter\Command;
 use MCStreetguy\FusionLinter\Traits\CommonMessagesTrait;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
-use Neos\Flow\Mvc\Controller\Exception\InactivePackageException;
-use Neos\Flow\Mvc\Exception\InvalidPackageKeyException;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\View\FusionView;
+use MCStreetguy\FusionLinter\Fusion\DebugFusionView;
 
 /**
  * @Flow\Scope("singleton")
@@ -38,18 +37,20 @@ class FusionCommandController extends CommandController
     protected $settings;
 
     /**
-     * @var FusionView
+     * @var DebugFusionView
      */
     protected $fusionView;
 
     public function initializeObject()
     {
-        $this->fusionView = FusionView::createWithOptions([
+        $this->fusionView = new DebugFusionView([
             'fusionPathPatterns' => ['resource://@package/Private/Fusion'],
             'fusionPath' => '/root',
             'debugMode' => true,
             'enableContentCache' => false,
         ]);
+
+        $this->fusionView->disableFallbackView();
     }
 
     /**
@@ -82,9 +83,10 @@ class FusionCommandController extends CommandController
         }
 
         $this->fusionView->setPackageKey($packageKey);
+        $this->fusionView->setFusionPathPattern("resource://$packageKey/Private/Fusion");
         $this->fusionView->setFusionPath($path ?? $this->settings['defaultFusionPath']);
 
-        $result = $this->fusionView->render();
+        $this->fusionView->render();
 
         $this->outputSuccessMessage('No error has been found, your Fusion code seems valid.');
         $this->quit();
