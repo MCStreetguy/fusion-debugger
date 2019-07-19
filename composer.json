@@ -1,9 +1,10 @@
 {
-    "description": "",
-    "type": "neos-plugin",
     "name": "mcstreetguy/fusionlinter",
+    "type": "neos-plugin",
+    "description": "A simple linter command for debugging Fusion code.",
     "require": {
-        "neos/flow": "*"
+        "neos/flow": "^4.3.0",
+        "neos/fusion": "*"
     },
     "autoload": {
         "psr-4": {
