@@ -1,8 +1,18 @@
 <?php
 namespace MCStreetguy\FusionLinter\Traits;
 
-trait CommonMessagesTrait
+use Neos\Flow\Annotations as Flow;
+
+/**
+ * 
+ */
+trait AdvancedConsoleLogger
 {
+    //* Only present to ensure we're inside a CommandController class
+    abstract protected function callCommandMethod();
+    abstract protected function outputLine(string $text = '', array $arguments = []);
+    abstract protected function output(string $text, array $arguments = []);
+
     /**
      * Print a success message to the terminal.
      *

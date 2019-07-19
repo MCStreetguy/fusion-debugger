@@ -5,19 +5,17 @@ namespace MCStreetguy\FusionLinter\Command;
  * This file is part of the MCStreetguy.FusionLinter package.
  */
 
-use MCStreetguy\FusionLinter\Traits\CommonMessagesTrait;
+use MCStreetguy\FusionLinter\Traits\AdvancedConsoleLogger;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Package\PackageManagerInterface;
-use Neos\Fusion\View\FusionView;
-use MCStreetguy\FusionLinter\Fusion\DebugFusionView;
 
 /**
  * @Flow\Scope("singleton")
  */
 class FusionCommandController extends CommandController
 {
-    use CommonMessagesTrait;
+    use AdvancedConsoleLogger;
 
     const EC_INVALID_KEY = 2;
     const EC_INACTIVE_PACKAGE = 3;
@@ -35,21 +33,6 @@ class FusionCommandController extends CommandController
      * @Flow\InjectConfiguration
      */
     protected $settings;
-
-    /**
-     * @var DebugFusionView
-     */
-    protected $fusionView;
-
-    public function initializeObject()
-    {
-        $this->fusionView = new DebugFusionView([
-            'debugMode' => true,
-            'enableContentCache' => false,
-        ]);
-
-        $this->fusionView->disableFallbackView();
-    }
 
     /**
      * Lint the existing Fusion code.
