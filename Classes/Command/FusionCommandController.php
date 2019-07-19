@@ -57,10 +57,8 @@ class FusionCommandController extends CommandController
      *
      * Lint the existing Fusion code.
      *
-     * @param string $packageKey The package to load the Fusion code from.
-     *                           Must be an active and unfrozen package for the linting to work!
-     * @param string $path The fusion path to be linted.
-     *                     Can be ommitted if the standard '/root' path shall be linted.
+     * @param string $packageKey The package to load the Fusion code from. Package must be active and not frozen.
+     * @param string $path The fusion path to be linted. If ommitted, the standard '/root' path is used.
      * @return void
      */
     public function lintCommand(string $packageKey, string $path = null)
