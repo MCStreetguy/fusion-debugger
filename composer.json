@@ -1,0 +1,18 @@
+{
+    "description": "",
+    "type": "neos-plugin",
+    "name": "mcstreetguy/fusionlinter",
+    "require": {
+        "neos/flow": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "MCStreetguy\\FusionLinter\\": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "MCStreetguy.FusionLinter"
+        }
+    }
+}
