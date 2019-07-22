@@ -1,0 +1,32 @@
+# For more information about the properties used in
+# this file, please see the EditorConfig documentation:
+# http://editorconfig.org/
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+[*.{php,html,htm}]
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{yml,yaml,md,json}]
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[composer.json]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
