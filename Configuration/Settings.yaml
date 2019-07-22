@@ -1,3 +1,4 @@
 MCStreetguy:
   FusionLinter:
-    defaultFusionPath: 'root'
+    fusionFilePathPatterns:
+      - resource://@package/Private/Fusion/

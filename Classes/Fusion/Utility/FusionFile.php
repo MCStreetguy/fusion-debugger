@@ -2,12 +2,19 @@
 namespace MCStreetguy\FusionLinter\Fusion\Utility;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("prototype")
  */
 class FusionFile
 {
+    /**
+     * The root fusion folder containing this file.
+     * @var string
+     */
+    protected $rootPath;
+
     /**
      * The full path to the corresponding fusion file.
      * @var string
@@ -50,15 +57,25 @@ class FusionFile
      */
     protected $contents = null;
 
-    public function __construct(string $filePathAndName)
+    public function __construct(string $rootPath, string $filePathAndName)
     {
-        // clearstatcache(true, $filePathAndName);
+        $this->rootPath = $rootPath;
+        $this->fullPath = $filePathAndName;
+        $this->size = filesize($filePathAndName);
         $this->basedir = dirname($filePathAndName);
         $this->filename = basename($filePathAndName);
-        $this->fullPath = $filePathAndName;
         $this->lastAccess = fileatime($filePathAndName);
         $this->lastModification = filemtime($filePathAndName);
-        $this->size = filesize($filePathAndName);
+    }
+
+    /**
+     * Get the root fusion folder containing this file.
+     *
+     * @return string
+     */
+    public function getRootPath()
+    {
+        return $this->rootPath;
     }
 
     /**
@@ -69,6 +86,17 @@ class FusionFile
     public function getFullPath()
     {
         return $this->fullPath;
+    }
+
+    /**
+     * Get the path of the corresponding fusion file, relative to it's root directory.
+     * Mainly used for logging purposes.
+     *
+     * @return string
+     */
+    public function getRelativePath()
+    {
+        return Files::getRelativePath($this->rootPath, $this->fullPath);
     }
 
     /**

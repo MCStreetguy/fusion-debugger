@@ -1,18 +1,17 @@
 <?php
-namespace MCStreetguy\FusionLinter\Service;
+namespace MCStreetguy\FusionLinter\Command;
 
-use Neos\Flow\Cli\ConsoleOutput;
+use Neos\Flow\Cli\CommandController;
+use MCStreetguy\FusionLinter\Service\IO;
 
-class IO
+/**
+ *
+ */
+abstract class AbstractCommandController extends CommandController
 {
-    /**
-     * @var ConsoleOutput|null
-     */
-    protected static $output;
-
-    public static function injectConsoleOutput(ConsoleOutput $output)
+    public function initializeObject()
     {
-        self::$output = $output;
+        IO::injectConsoleOutput($this->output);
     }
 
     /**
@@ -21,7 +20,7 @@ class IO
      * @param string $message
      * @return void
      */
-    public static function log(string $message)
+    public function log(string $message)
     {
         if (FLOW_SAPITYPE === 'CLI') {
             echo $message . PHP_EOL;
@@ -34,7 +33,7 @@ class IO
      * @param string $message
      * @return void
      */
-    public static function warning(string $message)
+    public function warning(string $message)
     {
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[33m" . $message . "\033[0m" . PHP_EOL;
@@ -47,7 +46,7 @@ class IO
      * @param string $message
      * @return void
      */
-    public static function error(string $message)
+    public function error(string $message)
     {
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[31m\033[1m" . $message . "\033[0m" . PHP_EOL;
@@ -60,7 +59,7 @@ class IO
      * @param string $message
      * @return void
      */
-    public static function success(string $message)
+    public function success(string $message)
     {
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[32m" . $message . "\033[0m" . PHP_EOL;
@@ -73,7 +72,7 @@ class IO
      * @param string $message
      * @return void
      */
-    public static function info(string $message)
+    public function info(string $message)
     {
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[0;36m" . $message . "\033[0m" . PHP_EOL;
@@ -91,13 +90,9 @@ class IO
      * @return void
      * @api
      */
-    public static function output($text, array $arguments = [])
+    public function output($text, array $arguments = [])
     {
-        if (self::$output === null) {
-            return;
-        }
-
-        self::$output->output($text, $arguments);
+        $this->output->output($text, $arguments);
     }
 
     /**
@@ -110,13 +105,9 @@ class IO
      * @see outputLines()
      * @api
      */
-    public static function outputLine($text = '', array $arguments = [])
+    public function outputLine($text = '', array $arguments = [])
     {
-        if (self::$output === null) {
-            return;
-        }
-
-        self::$output->outputLine($text, $arguments);
+        $this->output->outputLine($text, $arguments);
     }
 
     /**
@@ -130,13 +121,9 @@ class IO
      * @see outputLine()
      * @api
      */
-    public static function outputFormatted($text = '', array $arguments = [], $leftPadding = 0)
+    public function outputFormatted($text = '', array $arguments = [], $leftPadding = 0)
     {
-        if (self::$output === null) {
-            return;
-        }
-
-        self::$output->outputFormatted($text, $arguments, $leftPadding);
+        $this->output->outputFormatted($text, $arguments, $leftPadding);
     }
 
     /**
@@ -145,9 +132,9 @@ class IO
      * @param string $message The message to output
      * @return void
      */
-    public static function outputSuccessMessage(string $message)
+    public function outputSuccessMessage(string $message)
     {
-        self::outputLine("<fg=green>$message</>");
+        $this->outputLine("<fg=green>$message</>");
     }
 
     /**
@@ -156,9 +143,9 @@ class IO
      * @param string $message The message to output
      * @return void
      */
-    public static function outputWarningMessage(string $message)
+    public function outputWarningMessage(string $message)
     {
-        self::outputLine("<fg=yellow>$message</>");
+        $this->outputLine("<fg=yellow>$message</>");
     }
 
     /**
@@ -167,9 +154,9 @@ class IO
      * @param string $message The message to output
      * @return void
      */
-    public static function outputInfoMessage(string $message)
+    public function outputInfoMessage(string $message)
     {
-        self::outputLine("<fg=cyan>$message</>");
+        $this->outputLine("<fg=cyan>$message</>");
     }
 
     /**
@@ -178,9 +165,9 @@ class IO
      * @param string $message The message to output
      * @return void
      */
-    public static function outputErrorMessage(string $message)
+    public function outputErrorMessage(string $message)
     {
-        self::outputLine("<fg=red;options=bold>$message</>");
+        $this->outputLine("<fg=red;options=bold>$message</>");
     }
 
     /**
@@ -190,9 +177,9 @@ class IO
      * @param bool $default The default answer if the user entered nothing
      * @return bool
      */
-    public static function requireConfirmation(string $question, bool $default = false): bool
+    public function requireConfirmation(string $question, bool $default = false): bool
     {
-        return self::$output->askConfirmation("<comment>$question [y/n]</> ", $default);
+        return $this->output->askConfirmation("<comment>$question [y/n]</> ", $default);
     }
 
     /**
@@ -202,9 +189,9 @@ class IO
      * @param int $margin The number of newlines to print above and below the border
      * @return void
      */
-    public static function outputBorder(string $pattern = '-', int $margin = 0)
+    public function outputBorder(string $pattern = '-', int $margin = 0)
     {
-        $maxLength = self::$output->getMaximumLineLength();
+        $maxLength = $this->output->getMaximumLineLength();
 
         if (mb_strlen($pattern) < $maxLength) {
             $multiplier = ceil($maxLength / mb_strlen($pattern));
@@ -216,13 +203,13 @@ class IO
         }
 
         for ($i = 0; $i < $margin; $i++) {
-            self::newline();
+            $this->newline();
         }
 
-        self::outputLine($pattern);
+        $this->outputLine($pattern);
 
         for ($i = 0; $i < $margin; $i++) {
-            self::newline();
+            $this->newline();
         }
     }
 
@@ -234,7 +221,7 @@ class IO
      * @param string $connector The connector string to use for separation of keys and values
      * @return void
      */
-    public static function outputDataList(array $data, string $connector = ':')
+    public function outputDataList(array $data, string $connector = ':')
     {
         $maxLength = 0;
         foreach (array_keys($data) as $key) {
@@ -248,10 +235,10 @@ class IO
         foreach ($data as $key => $value) {
             $key = str_pad($key, $maxLength, ' ', STR_PAD_RIGHT);
 
-            self::$output("<fg=cyan>$key</>");
-            self::$output(" $connector ");
-            self::$output("<fg=green>$value</>");
-            self::$output(PHP_EOL);
+            $this->output("<fg=cyan>$key</>");
+            $this->output(" $connector ");
+            $this->output("<fg=green>$value</>");
+            $this->output(PHP_EOL);
         }
     }
 
@@ -261,10 +248,10 @@ class IO
      * @param array $data The list of data to display
      * @return void
      */
-    public static function outputUnorderedList(array $data)
+    public function outputUnorderedList(array $data)
     {
         foreach ($data as $value) {
-            self::outputLine(' - ' . $value);
+            $this->outputLine(' - ' . $value);
         }
     }
 
@@ -274,7 +261,7 @@ class IO
      * @param array $data The list of data to display
      * @return void
      */
-    public static function outputOrderedList(array $data)
+    public function outputOrderedList(array $data)
     {
         $maxNum = mb_strlen(strval(count($data) + 1)) + 3;
 
@@ -282,7 +269,7 @@ class IO
             $key = (' ' . ($index + 1) . ')');
             $key = str_pad($key, $maxNum, ' ', STR_PAD_RIGHT);
 
-            self::outputLine($key . $value);
+            $this->outputLine($key . $value);
         }
     }
 
@@ -292,10 +279,10 @@ class IO
      * @param int $count The number of newlines to print
      * @return void
      */
-    public static function newline(int $count = 1)
+    public function newline(int $count = 1)
     {
         for ($i = 0; $i < $count; $i++) {
-            self::$output(PHP_EOL);
+            $this->output(PHP_EOL);
         }
     }
 }

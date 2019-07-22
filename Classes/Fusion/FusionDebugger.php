@@ -1,22 +1,19 @@
 <?php
-namespace MCStreetguy\FusionLinter\Command;
+namespace MCStreetguy\FusionLinter\Fusion;
 
-/*
- * This file is part of the MCStreetguy.FusionLinter package.
- */
-
+use MCStreetguy\FusionLinter\Fusion\Utility\FusionFile;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Package\PackageInterface;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use MCStreetguy\FusionLinter\Fusion\Utility\FusionFile;
-use BlueM\Tree;
 use Neos\Utility\Files;
+use MCStreetguy\FusionLinter\Service\IO;
 
 /**
  * @Flow\Scope("singleton")
  */
-class FusionCommandController extends AbstractCommandController
+class FusionDebugger
 {
     /**
      * @Flow\InjectConfiguration
@@ -41,42 +38,12 @@ class FusionCommandController extends AbstractCommandController
      */
     protected $fusionRuntime;
 
-    // Commands
-
     /**
-     * Lint the existing Fusion code.
+     * Load all available Fusion files.
      *
-     * Lint the existing Fusion code.
-     *
-     * @param string $packageKey The package to load the Fusion code from.
-     * @return void
-     */
-    public function lintCommand(string $packageKey = null)
-    {
-        $filesToLint = $this->loadFusionFiles($packageKey);
-
-        $objectTree = [];
-        foreach ($filesToLint as $file) {
-            $fileTree = $this->fusionParser->parse(
-                $file->getContents(),
-                $file->getFullPath(),
-                $objectTree,
-                true
-            );
-
-            $this->outputSuccessMessage("File {$file->getRelativePath()} contains no errors.");
-        }
-
-        $treeStructure = new Tree($objectTree);
-        \Kint::dump($treeStructure);
-    }
-
-    // Service methods
-
-    /**
      * @return FusionFile[]
      */
-    protected function loadFusionFiles(string $fromPackageKey = null)
+    public function loadFusionFiles(string $fromPackageKey = null)
     {
         $foundFusionFiles = [];
 
@@ -115,5 +82,31 @@ class FusionCommandController extends AbstractCommandController
         //? Caching?
 
         return $foundFusionFiles;
+    }
+
+    /**
+     * Lint fusion files.
+     *
+     * @param FusionFile[] $files (optional) The files to lint
+     * @return null
+     */
+    public function lint(array $files = [])
+    {
+        if (empty($files)) {
+            $files = $this->loadFusionFiles();
+        }
+
+        $internalObjectTree = [];
+
+        foreach ($files as $file) {
+            $fileObjectTree = $this->fusionParser->parse(
+                $file->getContents(),
+                $file->getFullPath(),
+                $internalObjectTree,
+                true
+            );
+
+            IO::outputSuccessMessage("File {$file->getRelativePath()} contains no syntax errors.");
+        }
     }
 }

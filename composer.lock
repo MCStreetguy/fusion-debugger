@@ -4,8 +4,54 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5893e44ea7da35e0d1edbd167f686e8a",
+    "content-hash": "f5d3a3a2a83fde70641a11d7989811ed",
     "packages": [
+        {
+            "name": "bluem/tree",
+            "version": "3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BlueM/Tree.git",
+                "reference": "c77f469d7741b01c695ae04e55a90595bd659b6d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BlueM/Tree/zipball/c77f469d7741b01c695ae04e55a90595bd659b6d",
+                "reference": "c77f469d7741b01c695ae04e55a90595bd659b6d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "doctrine/instantiator": "1.0.*",
+                "phpunit/phpunit": "6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BlueM\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Carsten Blüm",
+                    "email": "carsten@bluem.net"
+                }
+            ],
+            "description": "Library for handling tree structures based on parent IDs",
+            "homepage": "https://github.com/BlueM/Tree",
+            "keywords": [
+                "hierarchical",
+                "tree"
+            ],
+            "time": "2019-03-28T06:18:44+00:00"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.6.1",
