@@ -1,0 +1,22 @@
+prototype(Some.Cool:Prototype) {
+  filling = Neos.Fusion:Array {
+    // The Neos.Fusion:Array object has been renamed to Neos.Fusion:Join the old name is DEPRECATED
+    up = Neos.Fusion:Array {
+      // The Neos.Fusion:Array object has been renamed to Neos.Fusion:Join the old name is DEPRECATED
+      some = 'space'
+    }
+  }
+
+  foo = 'bar'
+  baz = Neos.Fusion:Http.ResponseHead {
+    statusCode = 200
+  }
+
+  andthis = Neos.Fusion:Value {
+    value = 'is an error'
+  }
+}
+
+prototype(Obis.Site:Prototype < prototype(Neos.Neos:Page) {
+
+}

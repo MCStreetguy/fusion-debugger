@@ -10,10 +10,10 @@ use Neos\Utility\Files;
 class FusionFile
 {
     /**
-     * The root fusion folder containing this file.
+     * The belonging package key of the corresponding fusion file.
      * @var string
      */
-    protected $rootPath;
+    protected $packageKey;
 
     /**
      * The full path to the corresponding fusion file.
@@ -57,9 +57,9 @@ class FusionFile
      */
     protected $contents = null;
 
-    public function __construct(string $rootPath, string $filePathAndName)
+    public function __construct(string $packageKey, string $filePathAndName)
     {
-        $this->rootPath = $rootPath;
+        $this->packageKey = $packageKey;
         $this->fullPath = $filePathAndName;
         $this->size = filesize($filePathAndName);
         $this->basedir = dirname($filePathAndName);
@@ -69,13 +69,13 @@ class FusionFile
     }
 
     /**
-     * Get the root fusion folder containing this file.
+     * Get the belonging package key of the corresponding fusion file.
      *
      * @return string
      */
-    public function getRootPath()
+    public function getPackageKey()
     {
-        return $this->rootPath;
+        return $this->packageKey;
     }
 
     /**
@@ -86,17 +86,6 @@ class FusionFile
     public function getFullPath()
     {
         return $this->fullPath;
-    }
-
-    /**
-     * Get the path of the corresponding fusion file, relative to it's root directory.
-     * Mainly used for logging purposes.
-     *
-     * @return string
-     */
-    public function getRelativePath()
-    {
-        return Files::getRelativePath($this->rootPath, $this->fullPath);
     }
 
     /**
