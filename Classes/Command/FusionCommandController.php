@@ -288,4 +288,69 @@ class FusionCommandController extends AbstractCommandController
             $this->outputErrorMessage($e->getMessage());
         }
     }
+
+    /**
+     * Print a recursive fusion tree structure with ASCII chars to the terminal.
+     * Additionally this returns the tree as array of strings.
+     *
+     * @param array $data The associative data to display
+     * @param string $root The root key to display on top of the tree (defaults to '.')
+     * @param bool $suppressOutput Suppress any output (mainly used internally for recursive rendering)
+     * @return array
+     */
+    protected function outputTree(array $data, string $root = '.', bool $suppressOutput = false)
+    {
+        $tree = [$root];
+        $cycle = 0;
+        $count = count($data);
+
+        foreach ($data as $key => $value) {
+            $prefix = '├── ';
+            $isLast = ($cycle === $count - 1);
+
+            if ($isLast === true) {
+                $prefix = '└── ';
+            }
+
+            $type = gettype($value);
+
+            if ($type === 'array') {
+                $isFirst = true;
+
+                foreach ($this->outputTree($value, $key, true) as $nestedLine) {
+                    if ($isFirst === true) {
+                        $tree[] = $prefix . $nestedLine;
+                    } elseif ($isLast === true) {
+                        $tree[] = '    ' . $nestedLine;
+                    } else {
+                        $tree[] = '│   ' . $nestedLine;
+                    }
+
+                    $isFirst = false;
+                }
+            } elseif ($type === 'object') {
+                $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
+            } elseif ($value === null) {
+                $tree[] = $prefix . $key . ' => null';
+            } elseif ($value === false) {
+                $tree[] = $prefix . $key . ' => false';
+            } elseif (empty($value)) {
+                $tree[] = $prefix . $key . ' => [EMPTY]';
+            } elseif ($key === '__eelExpression') {
+                $tree[] = $prefix . $key . ' => ${' . $value . '}';
+            } elseif ($type === 'string' && $key !== '__objectType') {
+                $tree[] = $prefix . $key . ' => "' . $value . '"';
+            } else {
+                $tree[] = $prefix . $key . ' => ' . $value;
+            }
+
+            $cycle++;
+        }
+
+        if ($suppressOutput === false) {
+            $this->output(implode(PHP_EOL, $tree));
+        }
+
+        return $tree;
+    }
 }
