@@ -314,7 +314,7 @@ abstract class AbstractCommandController extends CommandController
                     } elseif ($isLast === true) {
                         $tree[] = '    ' . $nestedLine;
                     } else {
-                        $tree[] = '|   ' . $nestedLine;
+                        $tree[] = '│   ' . $nestedLine;
                     }
 
                     $isFirst = false;
@@ -324,7 +324,7 @@ abstract class AbstractCommandController extends CommandController
             } elseif ($value === null) {
                 $tree[] = $prefix . $key . ' => null';
             } elseif ($value === false) {
-                $tree[] = $prefix . $key . ' => true';
+                $tree[] = $prefix . $key . ' => false';
             } elseif (empty($value)) {
                 $tree[] = $prefix . $key . ' => [EMPTY]';
             } elseif ($key === '__eelExpression') {
@@ -339,7 +339,6 @@ abstract class AbstractCommandController extends CommandController
         }
 
         if ($suppressOutput === false) {
-            $tree[] = '';
             $this->output(implode(PHP_EOL, $tree));
         }
 
