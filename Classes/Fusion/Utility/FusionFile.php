@@ -1,6 +1,10 @@
 <?php
 namespace MCStreetguy\FusionLinter\Fusion\Utility;
 
+/*
+ * This file is part of the MCStreetguy.FusionLinter package.
+ */
+
 use Neos\Flow\Annotations as Flow;
 use Neos\Utility\Files;
 

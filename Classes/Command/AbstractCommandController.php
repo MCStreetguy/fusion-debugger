@@ -1,7 +1,10 @@
 <?php
 namespace MCStreetguy\FusionLinter\Command;
 
-use MCStreetguy\FusionLinter\Service\IO;
+/*
+ * This file is part of the MCStreetguy.FusionLinter package.
+ */
+
 use Neos\Flow\Cli\CommandController;
 
 /**
@@ -9,11 +12,6 @@ use Neos\Flow\Cli\CommandController;
  */
 abstract class AbstractCommandController extends CommandController
 {
-    public function initializeObject()
-    {
-        IO::injectConsoleOutput($this->output);
-    }
-
     /**
      * Log a message to the terminal.
      *
