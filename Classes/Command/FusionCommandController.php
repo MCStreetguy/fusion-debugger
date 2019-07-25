@@ -52,49 +52,64 @@ class FusionCommandController extends AbstractCommandController
      *
      * @param string $packageKey The package to load the Fusion code from.
      * @param bool $verbose Produce additional output with additional information.
+     * @param bool $noProgress Don't show any progress information
      * @return void
      */
-    public function lintCommand(string $packageKey = null, bool $verbose = false)
+    public function lintCommand(string $packageKey = null, bool $verbose = false, bool $noProgress = false)
     {
         $filesToLint = $this->loadFusionFiles($packageKey);
         $totalCount = count($filesToLint);
-        $errors = 0;
+        $errors = [];
+        $errorCount = 0;
 
-        if ($verbose === false) {
+        if ($verbose === false && $noProgress === false) {
             $this->output->progressStart($totalCount);
         }
 
         foreach ($filesToLint as $file) {
+            $containingPackageKey = $file->getPackageKey();
+            $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
+
             try {
                 $fileTree = $this->fusionParser->parse(
                     $file->getContents(),
                     $file->getFullPath()
                 );
             } catch (Exception $e) {
-                $containingPackageKey = $file->getPackageKey();
-                $containingPackage = $this->packageManager->getPackage($containingPackageKey);
-                $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
-
-                $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
+                $errorMessage = "Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}";
 
                 if ($verbose === false) {
-                    $this->output->progressAdvance();
+                    if ($noProgress === false) {
+                        $this->output->progressAdvance();
+                    }
+
+                    $errors[] = $errorMessage;
+                    $errorCount++;
+                    continue;
                 }
 
-                $errors++;
+                $this->outputErrorMessage($errorMessage);
+                $errorCount++;
                 continue;
             }
 
             if ($verbose === true) {
-                $this->outputSuccessMessage("File {$file->getRelativePath()} contains no errors.");
-            } else {
+                $this->outputSuccessMessage("File '$relativeFilePath' contains no errors.");
+                continue;
+            } elseif ($noProgress === false) {
                 $this->output->progressAdvance();
-                // $this->output->progressAdvance(1, true);
             }
         }
 
         if ($verbose === false) {
-            $this->output->progressFinish();
+            if ($noProgress === false) {
+                $this->output->progressFinish();
+            }
+
+            $this->newline();
+            foreach ($errors as $errorMessage) {
+                $this->outputErrorMessage($errorMessage);
+            }
         }
 
         $this->newline();
@@ -102,7 +117,7 @@ class FusionCommandController extends AbstractCommandController
         if ($errors <= 0) {
             $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
         } else {
-            $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
+            $this->outputWarningMessage("Processed $totalCount files and encountered $errorCount errors!");
             $this->outputWarningMessage('There may be additional output containing more information above.');
         }
     }
