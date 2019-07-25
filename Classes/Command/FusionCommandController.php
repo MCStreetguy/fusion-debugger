@@ -163,19 +163,21 @@ class FusionCommandController extends AbstractCommandController
      *
      * Show the merged fusion prototype configuration.
      *
+     * @param string $prototype Show information on the specified prototype only
      * @param bool $verbose Produce more detailled output
      * @return void
      * @see mcstreetguy.fusionlinter:fusion:showobjecttree
      */
-    public function showPrototypeHierachieCommand(bool $verbose = false)
+    public function showPrototypeHierachieCommand(string $prototype = null, bool $verbose = false)
     {
         $files = $this->loadFusionFiles();
         $objectTree = [];
 
         foreach ($files as $file) {
             $filePath = $file->getFullPath();
+
             try {
-                $this->fusionParser->parse($file->getContents(), $filePath, $objectTree);
+                $objectTree = $this->fusionParser->parse($file->getContents(), $filePath, $objectTree);
             } catch (Exception $e) {
                 $this->outputErrorMessage("Failed to parse fusion file '$filePath'!");
                 $this->quit(1);
@@ -190,7 +192,20 @@ class FusionCommandController extends AbstractCommandController
             $this->outputInfoMessage('Building object hierachie...');
         }
 
-        $this->outputTree($objectTree['__prototypes'], '__prototypes');
+        $path = '__prototypes';
+        $subtree = $objectTree[$path];
+
+        if ($prototype !== null && !empty($prototype)) {
+            if (!array_key_exists($prototype, $subtree)) {
+                $this->outputErrorMessage("There is no definition for prototype of name '$prototype'!");
+                $this->quit(4);
+            }
+
+            $path = $prototype;
+            $subtree = $subtree[$prototype];
+        }
+
+        $this->outputTree($subtree, $path);
     }
 
     // Service methods
