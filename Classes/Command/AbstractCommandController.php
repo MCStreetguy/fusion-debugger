@@ -296,33 +296,40 @@ abstract class AbstractCommandController extends CommandController
         $count = count($data);
 
         foreach ($data as $key => $value) {
-            $line = '├── ';
+            $prefix = '├── ';
+            $isLast = ($cycle === $count - 1);
 
-            if ($cycle === ($count - 1)) {
-                $line = '└── ';
+            if ($isLast === true) {
+                $prefix = '└── ';
             }
 
             $type = gettype($value);
 
             if ($type === 'array') {
+                $isFirst = true;
+
                 foreach ($this->outputTree($value, $key, true) as $nestedLine) {
-                    if ($cycle === ($count - 1)) {
-                        $line .= '  ' . $nestedLine;
+                    if ($isFirst === true) {
+                        $tree[] = $prefix . $nestedLine;
+                    } elseif ($isLast === true) {
+                        $tree[] = '    ' . $nestedLine;
                     } else {
-                        $line .= '| ' . $nestedLine;
+                        $tree[] = '|   ' . $nestedLine;
                     }
+
+                    $isFirst = false;
                 }
             } elseif ($type === 'object') {
-                $line .= $key . ' => object<' . get_class($value) . '>';
+                $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
             } else {
-                $line .= $key . ' => ' . $value;
+                $tree[] = $prefix . $key . ' => ' . $value;
             }
 
-            $tree[] = $line;
             $cycle++;
         }
 
         if ($suppressOutput === false) {
+            $tree[] = '';
             $this->output(implode(PHP_EOL, $tree));
         }
 
