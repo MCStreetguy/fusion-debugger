@@ -60,6 +60,10 @@ class FusionCommandController extends AbstractCommandController
         $totalCount = count($filesToLint);
         $errors = 0;
 
+        if ($verbose === false) {
+            $this->output->progressStart($totalCount);
+        }
+
         foreach ($filesToLint as $file) {
             try {
                 $fileTree = $this->fusionParser->parse(
@@ -73,13 +77,24 @@ class FusionCommandController extends AbstractCommandController
 
                 $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
 
+                if ($verbose === false) {
+                    $this->output->progressAdvance();
+                }
+
                 $errors++;
                 continue;
             }
 
             if ($verbose === true) {
                 $this->outputSuccessMessage("File {$file->getRelativePath()} contains no errors.");
+            } else {
+                $this->output->progressAdvance();
+                // $this->output->progressAdvance(1, true);
             }
+        }
+
+        if ($verbose === false) {
+            $this->output->progressFinish();
         }
 
         $this->newline();

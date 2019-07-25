@@ -16,7 +16,3 @@ prototype(Some.Cool:Prototype) {
     value = 'is an error'
   }
 }
-
-prototype(Obis.Site:Prototype < prototype(Neos.Neos:Page) {
-
-}

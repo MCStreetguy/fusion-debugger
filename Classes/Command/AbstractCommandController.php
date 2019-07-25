@@ -1,8 +1,8 @@
 <?php
 namespace MCStreetguy\FusionLinter\Command;
 
-use Neos\Flow\Cli\CommandController;
 use MCStreetguy\FusionLinter\Service\IO;
+use Neos\Flow\Cli\CommandController;
 
 /**
  *
