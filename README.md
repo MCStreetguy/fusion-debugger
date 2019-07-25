@@ -4,15 +4,17 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
 
 - [MCStreetguy.FusionLinter](#mcstreetguyfusionlinter)
   - [Overview](#overview)
-  - [Getting started](#getting-started)
-    - [Installation](#installation)
-      - [Troubleshooting](#troubleshooting)
-    - [Usage](#usage)
-    - [Reference](#reference)
+  - [Installation](#installation)
+    - [Troubleshooting](#troubleshooting)
+  - [Usage](#usage)
+  - [Reference](#reference)
+    - [Commands](#commands)
       - [`fusion:lint`](#fusionlint)
       - [`fusion:debug`](#fusiondebug)
       - [`fusion:showobjecttree`](#fusionshowobjecttree)
       - [`fusion:showprototypehierachie`](#fusionshowprototypehierachie)
+    - [Configuration](#configuration)
+      - [`MCStreetguy.FusionLinter.fusionFilePathPatterns`](#mcstreetguyfusionlinterfusionfilepathpatterns)
   - [Contributing](#contributing)
   - [Versioning](#versioning)
   - [Authors](#authors)
@@ -40,9 +42,7 @@ Well then you probably know about the reasons behind this plugin, it's _improved
 It's currently not possible in common Neos installations to have a closer look behind the scenes of Fusion rendering. It parses some code, does some magic and suddenly there is your page. But happens in between?  
 To get rid of that uncertainty this Plugin ultimately allows you to visualize what you normally won't see: the merged Fusion prototype configuration and the combined object tree.
 
-## Getting started
-
-### Installation
+## Installation
 
 Install the plugin by requiring it through composer:
 
@@ -50,7 +50,7 @@ Install the plugin by requiring it through composer:
 composer require mcstreetguy/fusion-linter
 ```
 
-#### Troubleshooting
+### Troubleshooting
 
 > Could not find a version of package mcstreetguy/fusion-linter matching your minimum-stability
 
@@ -61,11 +61,11 @@ Alternatively you could require the package with an explicit version constraint,
 composer require mcstreetguy/fusion-linter:0.2-alpha
 ```
 
-### Usage
+## Usage
 
 _to be written_
 
-### Reference
+## Reference
 
 The plugin provides several commands to the Flow CLI.
 Each command has a detailled help text available to guide you through it's usage.
@@ -82,6 +82,8 @@ PACKAGE "MCSTREETGUY.FUSIONLINTER":
 
 
 ```
+
+### Commands
 
 #### `fusion:lint`
 
@@ -154,6 +156,20 @@ OPTIONS:
 DESCRIPTION:
   Show the merged fusion prototype configuration.
 ```
+
+### Configuration
+
+#### `MCStreetguy.FusionLinter.fusionFilePathPatterns`
+
+An array of file path patterns used to search for Fusion files that will be loaded.  
+The default path `resource://@package/Private/Fusion/` is already present for ease of use.
+If your setup involves Fusion files at other locations as the default one provide these here.
+
+The following placeholders can be used inside the pattern and will be exchanged with real values upon evaluation:
+
+| **Placeholder** | **Description** |
+|-----------------|------------------------------------------------------------|
+| `@package` | The current package key from where the fusion gets loaded. |
 
 ## Contributing
 
