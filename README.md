@@ -8,6 +8,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
     - [Installation](#installation)
       - [Troubleshooting](#troubleshooting)
     - [Usage](#usage)
+    - [Reference](#reference)
       - [`fusion:lint`](#fusionlint)
       - [`fusion:debug`](#fusiondebug)
       - [`fusion:showobjecttree`](#fusionshowobjecttree)
@@ -61,6 +62,10 @@ composer require mcstreetguy/fusion-linter:0.2-alpha
 ```
 
 ### Usage
+
+_to be written_
+
+### Reference
 
 The plugin provides several commands to the Flow CLI.
 Each command has a detailled help text available to guide you through it's usage.
