@@ -321,6 +321,16 @@ abstract class AbstractCommandController extends CommandController
                 }
             } elseif ($type === 'object') {
                 $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
+            } elseif ($value === null) {
+                $tree[] = $prefix . $key . ' => null';
+            } elseif ($value === false) {
+                $tree[] = $prefix . $key . ' => true';
+            } elseif (empty($value)) {
+                $tree[] = $prefix . $key . ' => [EMPTY]';
+            } elseif ($key === '__eelExpression') {
+                $tree[] = $prefix . $key . ' => ${' . $value . '}';
+            } elseif ($type === 'string' && $key !== '__objectType') {
+                $tree[] = $prefix . $key . ' => "' . $value . '"';
             } else {
                 $tree[] = $prefix . $key . ' => ' . $value;
             }
