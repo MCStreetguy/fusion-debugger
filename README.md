@@ -6,6 +6,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Overview](#overview)
   - [Getting started](#getting-started)
     - [Installation](#installation)
+      - [Troubleshooting](#troubleshooting)
     - [Usage](#usage)
       - [`fusion:lint`](#fusionlint)
       - [`fusion:debug`](#fusiondebug)
@@ -46,6 +47,17 @@ Install the plugin by requiring it through composer:
 
 ``` bash
 composer require mcstreetguy/fusion-linter
+```
+
+#### Troubleshooting
+
+> Could not find a version of package mcstreetguy/fusion-linter matching your minimum-stability
+
+Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
+Alternatively you could require the package with an explicit version constraint, but please note that this only works for root-level manifests:
+
+``` bash
+composer require mcstreetguy/fusion-linter:0.2-alpha
 ```
 
 ### Usage
