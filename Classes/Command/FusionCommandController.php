@@ -5,15 +5,15 @@ namespace MCStreetguy\FusionLinter\Command;
  * This file is part of the MCStreetguy.FusionLinter package.
  */
 
+use BlueM\Tree;
+use MCStreetguy\FusionLinter\Fusion\Utility\FusionFile;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use MCStreetguy\FusionLinter\Fusion\Utility\FusionFile;
-use BlueM\Tree;
-use Neos\Utility\Files;
-use Neos\Flow\Exception;
 use Neos\Fusion\Exception as FusionException;
+use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("singleton")
@@ -69,7 +69,6 @@ class FusionCommandController extends AbstractCommandController
             } catch (Exception $e) {
                 $containingPackageKey = $file->getPackageKey();
                 $containingPackage = $this->packageManager->getPackage($containingPackageKey);
-                $packageRootPath = $containingPackage->getPackagePath();
                 $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
 
                 $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
@@ -91,6 +90,58 @@ class FusionCommandController extends AbstractCommandController
             $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
             $this->outputWarningMessage('There may be additional output containing more information above.');
         }
+    }
+
+    /**
+     * Debug the existing Fusion code.
+     *
+     * Debug the existing Fusion code.
+     *
+     * @return void
+     */
+    public function debugCommand()
+    {
+        $files = $this->loadFusionFiles();
+
+        foreach ($files as $file) {
+            $this->outputInfoMessage($file->getFullPath() . ':');
+            $this->outputLine($file->getContents());
+            $this->newline();
+        }
+    }
+
+    /**
+     * Show the merged fusion object tree.
+     *
+     * Show the merged fusion object tree.
+     *
+     * @param bool $verbose Produce more detailled output
+     * @return void
+     */
+    public function showObjectTreeCommand(bool $verbose = false)
+    {
+        $files = $this->loadFusionFiles();
+        $objectTree = [];
+
+        foreach ($files as $file) {
+            $filePath = $file->getFullPath();
+            try {
+                $this->fusionParser->parse($file->getContents(), $filePath, $objectTree);
+            } catch (Exception $e) {
+                $this->outputErrorMessage("Failed to parse fusion file '$filePath'!");
+                $this->quit(1);
+            }
+
+            if ($verbose === true) {
+                $this->outputInfoMessage("Loaded file '$filePath'.");
+            }
+        }
+
+        if ($verbose === true) {
+            $this->outputInfoMessage('Building object hierachie...');
+        }
+
+        $this->outputTree($objectTree);
     }
 
     // Service methods
