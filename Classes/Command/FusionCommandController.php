@@ -306,51 +306,55 @@ class FusionCommandController extends AbstractCommandController
 
         foreach ($data as $key => $value) {
             $prefix = '├── ';
-            $isLast = ($cycle === $count - 1);
 
-            if ($isLast === true) {
+            // Change box-decorator prefix if element is the last child
+            if (($isLast = ($cycle === $count - 1)) === true) {
                 $prefix = '└── ';
             }
 
             $type = gettype($value);
 
-            if ($type === 'array') {
+            if ($type === 'array') { // Render the tree for the nested array and append it to the current
                 $isFirst = true;
+                $nestedTree = $this->outputTree($value, $key, true);
 
-                foreach ($this->outputTree($value, $key, true) as $nestedLine) {
-                    if ($isFirst === true) {
+                foreach ($nestedTree as $nestedLine) {
+                    if ($isFirst === true) { // Don't indent the first line of the tree as we already have proper indentation
                         $tree[] = $prefix . $nestedLine;
-                    } elseif ($isLast === true) {
+                    } elseif ($isLast === true) { // Prepend the nested line with 4 spaces as there is no further parent-sibling
                         $tree[] = '    ' . $nestedLine;
-                    } else {
+                    } else { // Prepend the nested line with a box-decorator and 3 spaces as there are more parent-siblings to render
                         $tree[] = '│   ' . $nestedLine;
                     }
 
                     $isFirst = false;
                 }
-            } elseif ($type === 'object') {
+            } elseif ($type === 'object') { // Render a static label with the classname of the object
                 $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
-            } elseif ($value === null) {
+            } elseif ($value === null) { // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => null';
-            } elseif ($value === false) {
+            } elseif ($value === false) { // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => false';
-            } elseif (empty($value)) {
+            } elseif (empty($value)) { // Render a placeholder to show that the key is explictly empty
                 $tree[] = $prefix . $key . ' => [EMPTY]';
-            } elseif ($key === '__eelExpression') {
+            } elseif ($key === '__eelExpression') { // Surround eel expressions with '${...}' to make them look like such
                 $tree[] = $prefix . $key . ' => ${' . $value . '}';
-            } elseif ($type === 'string' && $key !== '__objectType') {
+            } elseif ($type === 'string' && $key !== '__objectType') { // Sourround strings that are not object names with quotation marks
                 $tree[] = $prefix . $key . ' => "' . $value . '"';
-            } else {
+            } else { // Render the static 'key => value' label for all other cases
                 $tree[] = $prefix . $key . ' => ' . $value;
             }
 
             $cycle++;
         }
 
+        // If were not in a nested method call, append a newline and output the tree
         if ($suppressOutput === false) {
+            $tree[] = '';
             $this->output(implode(PHP_EOL, $tree));
         }
 
+        // Return the tree as array of strings for internal further use
         return $tree;
     }
 }
