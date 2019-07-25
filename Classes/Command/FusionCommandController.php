@@ -5,15 +5,14 @@ namespace MCStreetguy\FusionLinter\Command;
  * This file is part of the MCStreetguy.FusionLinter package.
  */
 
-use BlueM\Tree;
 use MCStreetguy\FusionLinter\Fusion\Utility\FusionFile;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use Neos\Fusion\Exception as FusionException;
 use Neos\Utility\Files;
+use Neos\Utility\Arrays;
 
 /**
  * @Flow\Scope("singleton")
@@ -52,63 +51,33 @@ class FusionCommandController extends AbstractCommandController
      *
      * @param string $packageKey The package to load the Fusion code from.
      * @param bool $verbose Produce additional output with additional information.
-     * @param bool $noProgress Don't show any progress information
      * @return void
      */
-    public function lintCommand(string $packageKey = null, bool $verbose = false, bool $noProgress = false)
+    public function lintCommand(string $packageKey = null, bool $verbose = false)
     {
         $filesToLint = $this->loadFusionFiles($packageKey);
         $totalCount = count($filesToLint);
-        $errors = [];
-        $errorCount = 0;
-
-        if ($verbose === false && $noProgress === false) {
-            $this->output->progressStart($totalCount);
-        }
+        $errors = 0;
 
         foreach ($filesToLint as $file) {
-            $containingPackageKey = $file->getPackageKey();
-            $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
-
             try {
                 $fileTree = $this->fusionParser->parse(
                     $file->getContents(),
                     $file->getFullPath()
                 );
             } catch (Exception $e) {
-                $errorMessage = "Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}";
+                $containingPackageKey = $file->getPackageKey();
+                $containingPackage = $this->packageManager->getPackage($containingPackageKey);
+                $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
 
-                if ($verbose === false) {
-                    if ($noProgress === false) {
-                        $this->output->progressAdvance();
-                    }
+                $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
 
-                    $errors[] = $errorMessage;
-                    $errorCount++;
-                    continue;
-                }
-
-                $this->outputErrorMessage($errorMessage);
-                $errorCount++;
+                $errors++;
                 continue;
             }
 
             if ($verbose === true) {
-                $this->outputSuccessMessage("File '$relativeFilePath' contains no errors.");
-                continue;
-            } elseif ($noProgress === false) {
-                $this->output->progressAdvance();
-            }
-        }
-
-        if ($verbose === false) {
-            if ($noProgress === false) {
-                $this->output->progressFinish();
-            }
-
-            $this->newline();
-            foreach ($errors as $errorMessage) {
-                $this->outputErrorMessage($errorMessage);
+                $this->outputSuccessMessage("File {$file->getRelativePath()} contains no errors.");
             }
         }
 
@@ -117,7 +86,7 @@ class FusionCommandController extends AbstractCommandController
         if ($errors <= 0) {
             $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
         } else {
-            $this->outputWarningMessage("Processed $totalCount files and encountered $errorCount errors!");
+            $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
             $this->outputWarningMessage('There may be additional output containing more information above.');
         }
     }
@@ -145,10 +114,60 @@ class FusionCommandController extends AbstractCommandController
      *
      * Show the merged fusion object tree.
      *
+     * @param string $path The fusion path to show (defaults to 'root')
      * @param bool $verbose Produce more detailled output
      * @return void
+     * @see mcstreetguy.fusionlinter:fusion:showprototypehierachie
      */
-    public function showObjectTreeCommand(bool $verbose = false)
+    public function showObjectTreeCommand(string $path = 'root', bool $verbose = false)
+    {
+        if ($path === '__prototypes') {
+            $this->outputWarningMessage('Please use the fusion:showprototypehierachie command to debug Fusion prototypes!');
+            $this->quit(1);
+        }
+
+        $files = $this->loadFusionFiles();
+        $objectTree = [];
+
+        foreach ($files as $file) {
+            $filePath = $file->getFullPath();
+            try {
+                $objectTree = $this->fusionParser->parse($file->getContents(), $filePath, $objectTree);
+            } catch (Exception $e) {
+                $this->outputErrorMessage("Failed to parse fusion file '$filePath'!");
+                $this->quit(2);
+            }
+
+            if ($verbose === true) {
+                $this->outputInfoMessage("Loaded file '$filePath'.");
+            }
+        }
+
+        if ($verbose === true) {
+            $this->outputInfoMessage('Building object hierachie...');
+        }
+
+        unset($objectTree['__prototypes']);
+        $subtree = Arrays::getValueByPath($objectTree, $path);
+
+        if ($subtree === null) {
+            $this->outputErrorMessage("There is no such path '$path' in the Fusion object tree!");
+            $this->quit(3);
+        }
+
+        $this->outputTree(Arrays::convertObjectToArray($subtree), $path);
+    }
+
+    /**
+     * Show the merged fusion prototype configuration.
+     *
+     * Show the merged fusion prototype configuration.
+     *
+     * @param bool $verbose Produce more detailled output
+     * @return void
+     * @see mcstreetguy.fusionlinter:fusion:showobjecttree
+     */
+    public function showPrototypeHierachieCommand(bool $verbose = false)
     {
         $files = $this->loadFusionFiles();
         $objectTree = [];
@@ -171,7 +190,7 @@ class FusionCommandController extends AbstractCommandController
             $this->outputInfoMessage('Building object hierachie...');
         }
 
-        $this->outputTree($objectTree);
+        $this->outputTree($objectTree['__prototypes'], '__prototypes');
     }
 
     // Service methods
