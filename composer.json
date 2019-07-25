@@ -1,5 +1,5 @@
 {
-    "name": "mcstreetguy/fusion-linter",
+    "name": "mcstreetguy/fusion-debugger",
     "type": "neos-plugin",
     "description": "A simple linter command for debugging Fusion code.",
     "license": "MIT",
@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "source": "https://github.com/MCStreetguy/fusion-linter",
-        "issues": "https://github.com/MCStreetguy/fusion-linter/issues",
+        "source": "https://github.com/MCStreetguy/fusion-debugger",
+        "issues": "https://github.com/MCStreetguy/fusion-debugger/issues",
         "docs": "https://flowframework.readthedocs.io/en/4.3/",
         "chat": "https://slack.neos.io/",
         "email": "maximilianschmidt404@gmail.com"
@@ -24,12 +24,12 @@
     },
     "autoload": {
         "psr-4": {
-            "MCStreetguy\\FusionLinter\\": "Classes/"
+            "MCStreetguy\\FusionDebugger\\": "Classes/"
         }
     },
     "extra": {
         "neos": {
-            "package-key": "MCStreetguy.FusionLinter"
+            "package-key": "MCStreetguy.FusionDebugger"
         }
     },
     "require-dev": {

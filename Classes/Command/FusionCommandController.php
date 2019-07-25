@@ -1,11 +1,11 @@
 <?php
-namespace MCStreetguy\FusionLinter\Command;
+namespace MCStreetguy\FusionDebugger\Command;
 
 /*
- * This file is part of the MCStreetguy.FusionLinter package.
+ * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
-use MCStreetguy\FusionLinter\Fusion\Utility\FusionFile;
+use MCStreetguy\FusionDebugger\Fusion\Utility\FusionFile;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
@@ -117,7 +117,7 @@ class FusionCommandController extends AbstractCommandController
      * @param string $path The fusion path to show (defaults to 'root')
      * @param bool $verbose Produce more detailled output
      * @return void
-     * @see mcstreetguy.fusionlinter:fusion:showprototypehierachie
+     * @see mcstreetguy.fusiondebugger:fusion:showprototypehierachie
      */
     public function showObjectTreeCommand(string $path = 'root', bool $verbose = false)
     {
@@ -166,7 +166,7 @@ class FusionCommandController extends AbstractCommandController
      * @param string $prototype Show information on the specified prototype only
      * @param bool $verbose Produce more detailled output
      * @return void
-     * @see mcstreetguy.fusionlinter:fusion:showobjecttree
+     * @see mcstreetguy.fusiondebugger:fusion:showobjecttree
      */
     public function showPrototypeHierachieCommand(string $prototype = null, bool $verbose = false)
     {

@@ -1,8 +1,8 @@
-# MCStreetguy.FusionLinter
+# MCStreetguy.FusionDebugger
 
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
-- [MCStreetguy.FusionLinter](#mcstreetguyfusionlinter)
+- [MCStreetguy.FusionDebugger](#mcstreetguyfusiondebugger)
   - [Overview](#overview)
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
@@ -14,7 +14,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
       - [`fusion:showobjecttree`](#fusionshowobjecttree)
       - [`fusion:showprototypehierachie`](#fusionshowprototypehierachie)
     - [Configuration](#configuration)
-      - [`MCStreetguy.FusionLinter.fusionFilePathPatterns`](#mcstreetguyfusionlinterfusionfilepathpatterns)
+      - [`MCStreetguy.FusionDebugger.fusionFilePathPatterns`](#mcstreetguyfusiondebuggerfusionfilepathpatterns)
   - [Contributing](#contributing)
   - [Versioning](#versioning)
   - [Authors](#authors)
@@ -39,26 +39,27 @@ Did you ever came across some really strange rending issue while you created a p
 And did you ever told yourself: "Why the actual fuck is this happening? It's supposed to do something different."  
 Well then you probably know about the reasons behind this plugin, it's _improved debugging_.
 
-It's currently not possible in common Neos installations to have a closer look behind the scenes of Fusion rendering. It parses some code, does some magic and suddenly there is your page. But happens in between?  
-To get rid of that uncertainty this Plugin ultimately allows you to visualize what you normally won't see: the merged Fusion prototype configuration and the combined object tree.
+It's currently not possible in common Neos installations to have a closer look behind the scenes of Fusion rendering. It parses some code, does some magic and then hopefully your expected result will appear.
+But what happens actually in between?  
+To get rid of that uncertainty this Plugin allows you to visualize what you normally won't see: the merged Fusion prototype configuration and the combined object tree.
 
 ## Installation
 
 Install the plugin by requiring it through composer:
 
 ``` bash
-composer require mcstreetguy/fusion-linter
+composer require mcstreetguy/fusion-debugger
 ```
 
 ### Troubleshooting
 
-> Could not find a version of package mcstreetguy/fusion-linter matching your minimum-stability
+> Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability
 
 Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
 Alternatively you could require the package with an explicit version constraint, but please note that this only works for root-level manifests:
 
 ``` bash
-composer require mcstreetguy/fusion-linter:0.2-alpha
+composer require mcstreetguy/fusion-debugger:0.2-alpha
 ```
 
 ## Usage
@@ -91,7 +92,7 @@ Iterate each fusion file and try to parse it. If any syntax error occurres it'll
 
 ``` plain
 COMMAND:
-  mcstreetguy.fusionlinter:fusion:lint
+  mcstreetguy.fusiondebugger:fusion:lint
 
 USAGE:
   ./flow fusion:lint [<options>]
@@ -110,7 +111,7 @@ Print all the parsed fusion code to the terminal, in loading order.
 
 ``` plain
 COMMAND:
-  mcstreetguy.fusionlinter:fusion:debug
+  mcstreetguy.fusiondebugger:fusion:debug
 
 USAGE:
   ./flow fusion:debug
@@ -125,7 +126,7 @@ Visualize the fusion object tree.
 
 ``` plain
 COMMAND:
-  mcstreetguy.fusionlinter:fusion:showobjecttree
+  mcstreetguy.fusiondebugger:fusion:showobjecttree
 
 USAGE:
   ./flow fusion:showobjecttree [<options>]
@@ -144,7 +145,7 @@ Show the combined prototype hierachie, or the sole definition of the given proto
 
 ``` plain
 COMMAND:
-  mcstreetguy.fusionlinter:fusion:showprototypehierachie
+  mcstreetguy.fusiondebugger:fusion:showprototypehierachie
 
 USAGE:
   ./flow fusion:showprototypehierachie [<options>]
@@ -159,7 +160,7 @@ DESCRIPTION:
 
 ### Configuration
 
-#### `MCStreetguy.FusionLinter.fusionFilePathPatterns`
+#### `MCStreetguy.FusionDebugger.fusionFilePathPatterns`
 
 An array of file path patterns used to search for Fusion files that will be loaded.  
 The default path `resource://@package/Private/Fusion/` is already present for ease of use.
@@ -177,13 +178,13 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/MCStreetguy/fusion-linter/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/MCStreetguy/fusion-debugger/tags). 
 
 ## Authors
 
 * **Maximilian Schmidt** - _Owner_ - [MCStreetguy](https://github.com/MCStreetguy/)
 
-See also the list of [contributors](https://github.com/MCStreetguy/fusion-linter/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/MCStreetguy/fusion-debugger/contributors) who participated in this project.
 
 ## License
 

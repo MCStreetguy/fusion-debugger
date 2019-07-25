@@ -1,8 +1,8 @@
 <?php
-namespace MCStreetguy\FusionLinter\Fusion\Utility;
+namespace MCStreetguy\FusionDebugger\Fusion\Utility;
 
 /*
- * This file is part of the MCStreetguy.FusionLinter package.
+ * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
 use Neos\Flow\Annotations as Flow;

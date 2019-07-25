@@ -1,8 +1,8 @@
 <?php
-namespace MCStreetguy\FusionLinter\Command;
+namespace MCStreetguy\FusionDebugger\Command;
 
 /*
- * This file is part of the MCStreetguy.FusionLinter package.
+ * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
 use Neos\Flow\Cli\CommandController;

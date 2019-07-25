@@ -1,8 +1,8 @@
 #
-# This file is part of the MCStreetguy.FusionLinter package.
+# This file is part of the MCStreetguy.FusionDebugger package.
 #
 
 MCStreetguy:
-  FusionLinter:
+  FusionDebugger:
     fusionFilePathPatterns:
       - resource://@package/Private/Fusion/
