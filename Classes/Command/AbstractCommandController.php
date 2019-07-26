@@ -8,7 +8,7 @@ namespace MCStreetguy\FusionDebugger\Command;
 use Neos\Flow\Cli\CommandController;
 
 /**
- *
+ * Separates common styling functions from the actual command controller.
  */
 abstract class AbstractCommandController extends CommandController
 {

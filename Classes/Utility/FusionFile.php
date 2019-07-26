@@ -1,13 +1,16 @@
 <?php
-namespace MCStreetguy\FusionDebugger\Fusion\Utility;
+namespace MCStreetguy\FusionDebugger\Utility;
 
 /*
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
 use Neos\Flow\Annotations as Flow;
+use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
 
 /**
+ * An immutable fusion file representation, containing metadata and tunneling access to file contents.
+ *
  * @Flow\Scope("prototype")
  */
 class FusionFile
@@ -60,8 +63,19 @@ class FusionFile
      */
     protected $contents = null;
 
+    /**
+     * Construct a new instance.
+     *
+     * @param string $packageKey The origin package key of the corresponding fusion file.
+     * @param string $filePathAndName The full path to the corresponding fusion file.
+     * @throws FusionFileException If $filePathAndName does not exist or is not readable.
+     */
     public function __construct(string $packageKey, string $filePathAndName)
     {
+        if (!file_exists($filePathAndName) || !is_readable($filePathAndName)) {
+            throw FusionFileException::forMissingOrNotReadable($filePathAndName);
+        }
+
         $this->packageKey = $packageKey;
         $this->fullPath = $filePathAndName;
         $this->size = filesize($filePathAndName);

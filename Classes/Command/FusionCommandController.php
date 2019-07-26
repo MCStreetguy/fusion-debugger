@@ -5,16 +5,14 @@ namespace MCStreetguy\FusionDebugger\Command;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
-use MCStreetguy\FusionDebugger\Fusion\Utility\FusionFile;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use Neos\Utility\Files;
 use Neos\Utility\Arrays;
 use MCStreetguy\FusionDebugger\Fusion\Debugger;
-use MCStreetguy\FusionDebugger\Fusion\Utility\Files as FusionFiles;
+use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 
 /**
  * @Flow\Scope("singleton")
@@ -47,7 +45,7 @@ class FusionCommandController extends AbstractCommandController
 
     /**
      * @Flow\Inject
-     * @var FusionFiles
+     * @var FusionFileService
      */
     protected $files;
 
@@ -101,26 +99,6 @@ class FusionCommandController extends AbstractCommandController
         } else {
             $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
             $this->outputWarningMessage('There may be additional output containing more information above.');
-        }
-    }
-
-    /**
-     * Debug the existing Fusion code.
-     *
-     * Debug the existing Fusion code.
-     *
-     * @return void
-     */
-    public function debugFilesCommand()
-    {
-        $files = $this->files->load();
-
-        foreach ($files as $file) {
-            $this->outputBorder();
-            $this->outputInfoMessage($file->getFullPath() . ':');
-            $this->outputLine($file->getContents());
-            $this->outputBorder();
-            $this->newline();
         }
     }
 
@@ -179,20 +157,15 @@ class FusionCommandController extends AbstractCommandController
      *
      * @param string $prototype The prototype to resolve the definition for
      * @param bool $noColor Suppress any colorized output
-     * @param bool $noFlat Don't flatten the prototype definition array
+     * @param bool $notFlat Don't flatten the prototype definition array
      * @return void
      */
-    public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $noFlat = false)
+    public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $notFlat = false)
     {
         $definition = $this->debugger->loadPrototype($prototype);
 
-        if ($noFlat === false) {
-            $output = $this->output;
-            $definition = $this->debugger->flattenFusionDefinition($definition, function () use ($output) {
-                return $output->askConfirmation('Continue?');
-            });
-            Arrays::removeEmptyElementsRecursively($definition);
-            unset($definition[Debugger::PROTOTYPE_OBJECT_NAME_KEY]);
+        if ($notFlat === false) {
+            $definition = $this->debugger->flattenPrototypeDefinition($definition);
         }
 
         $tree = $this->outputTree($definition, $prototype, !$noColor);
@@ -203,6 +176,8 @@ class FusionCommandController extends AbstractCommandController
             $this->newline();
         }
     }
+
+    // Service methods
 
     protected function transformExceptionMessage(\Exception $e)
     {

@@ -1,5 +1,5 @@
 <?php
-namespace MCStreetguy\FusionDebugger\Fusion\Utility;
+namespace MCStreetguy\FusionDebugger\Utility;
 
 /*
  * This file is part of the MCStreetguy.FusionDebugger package.
@@ -7,15 +7,15 @@ namespace MCStreetguy\FusionDebugger\Fusion\Utility;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Package\PackageManagerInterface;
-use Neos\Utility\Files as FilesUtility;
+use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("singleton")
  */
-class Files
+class FusionFileService
 {
     /**
-     * Simple "cache" for found fusion files
+     * Simple "cache" for found fusion files.
      * @var array
      */
     protected $files = [];
@@ -33,6 +33,9 @@ class Files
     protected $packageManager;
 
     /**
+     * Load the available fusion files and create a FusionFile object for each respectively.
+     *
+     * @param string $fromPackageKey If given, valid and not frozen, only fusion files from that package are returned.
      * @return FusionFile[]
      */
     public function load(string $fromPackageKey = null)
@@ -49,7 +52,8 @@ class Files
         if ((
             $fromPackageKey !== null &&
             $this->packageManager->isPackageKeyValid($fromPackageKey) &&
-            $this->packageManager->isPackageAvailable($fromPackageKey)
+            $this->packageManager->isPackageAvailable($fromPackageKey) &&
+            !$this->packageManager->isPackageFrozen($fromPackageKey)
         )) {
             $sourcePackages = [$this->packageManager->getPackage($fromPackageKey)];
             $staticCacheKey = $fromPackageKey;
@@ -70,7 +74,7 @@ class Files
                 $basePath = str_replace('@package', $packageKey, $basePathPattern);
 
                 if (file_exists($basePath) && is_dir($basePath) && is_readable($basePath)) {
-                    foreach (FilesUtility::readDirectoryRecursively($basePath, '.fusion') as $file) {
+                    foreach (Files::readDirectoryRecursively($basePath, '.fusion') as $file) {
                         $foundFusionFiles[] = new FusionFile($packageKey, $file);
                     }
                 }
