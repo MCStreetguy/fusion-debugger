@@ -6,7 +6,6 @@ namespace MCStreetguy\FusionDebugger\Fusion\Utility;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("prototype")

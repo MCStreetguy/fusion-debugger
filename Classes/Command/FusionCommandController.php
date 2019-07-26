@@ -13,6 +13,8 @@ use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
 use Neos\Utility\Files;
 use Neos\Utility\Arrays;
+use MCStreetguy\FusionDebugger\Fusion\Debugger;
+use MCStreetguy\FusionDebugger\Fusion\Utility\Files as FusionFiles;
 
 /**
  * @Flow\Scope("singleton")
@@ -38,6 +40,18 @@ class FusionCommandController extends AbstractCommandController
     protected $fusionParser;
 
     /**
+     * @Flow\Inject
+     * @var Debugger
+     */
+    protected $debugger;
+
+    /**
+     * @Flow\Inject
+     * @var FusionFiles
+     */
+    protected $files;
+
+    /**
      * @var Runtime
      */
     protected $fusionRuntime;
@@ -61,7 +75,7 @@ class FusionCommandController extends AbstractCommandController
 
         foreach ($filesToLint as $file) {
             try {
-                $fileTree = $this->fusionParser->parse(
+                $this->fusionParser->parse(
                     $file->getContents(),
                     $file->getFullPath()
                 );
