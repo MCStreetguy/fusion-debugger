@@ -288,6 +288,20 @@ class Debugger
                 continue;
             }
 
+            if ($key === self::META_INFO_KEY) {
+                // We have meta keys so we prepend them with '@' and add them directly to the result
+                foreach ($value as $subkey => $subvalue) {
+                    if (is_array($subvalue)) {
+                        // If the nested value is an array it has to be flattened too
+                        $subvalue = $this->flattenPrototypeDefinition($subvalue);
+                    }
+
+                    $results['@' . $subkey] = $subvalue;
+                }
+
+                continue;
+            }
+
             if (!empty($value[self::OBJECT_TYPE_KEY])) {
                 // We have a nested prototype so we strip the empty internal properties
                 // and change it's key to contain the prototype name
@@ -301,6 +315,21 @@ class Debugger
                 unset($value[self::EXPRESSION_KEY]);
                 unset($value[self::OBJECT_TYPE_KEY]);
                 unset($value[self::VALUE_KEY]);
+
+                if (!empty($value[self::META_INFO_KEY])) {
+                    // We have nested meta keys so we prepend them with '@' and add them directly to the result
+                    foreach ($value[self::META_INFO_KEY] as $subkey => $subvalue) {
+                        if (is_array($subvalue)) {
+                            // If the nested value is an array it has to be flattened too
+                            $subvalue = $this->flattenPrototypeDefinition($subvalue);
+                        }
+
+                        $value['@' . $subkey] = $subvalue;
+                    }
+
+                    // Remove the actual meta property as it has been fully resolved
+                    unset($value[self::META_INFO_KEY]);
+                }
             } elseif (!empty($value[self::VALUE_KEY])) {
                 // We have a simple value so we just strip the empty internal properties
                 unset($value[self::EXPRESSION_KEY]);

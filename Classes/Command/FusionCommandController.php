@@ -266,17 +266,19 @@ class FusionCommandController extends AbstractCommandController
     protected function colorizeTree(array $tree)
     {
         return preg_replace([
-            '/\$\{(.+)\}/', // 1. EEL expressions
-            '/(\w+) \[([a-zA-Z0-9.:]+)\]/', // 2. Object names
-            '/─ (__[\w.:-]+)/', // 3. internal properties
-            '/─ ([\w.:-]+)/', // 4. other properties
-            '/".+"/', // 5. string values
+            '/@[\w.:-]+/', // 1. meta properties
+            '/\$\{(.+)\}/', // 2. EEL expressions
+            '/(\w+) \[([a-zA-Z0-9.:]+)\]/', // 3. Object names
+            '/─ (__[\w.:-]+)/', // 4. internal properties
+            '/─ ([\w.:-]+)/', // 5. other properties
+            '/".+"/', // 6. string values
         ], [
-            '<fg=magenta>\${$1}</>', // 1. Magenta
-            '$1 <fg=yellow>[$2]</>', // 2. Yellow
-            '─ <fg=red>$1</>', // 3. Red
-            '─ <fg=blue>$1</>', // 4. Blue
-            '<fg=green>$0</>', // 5. Green
+            '<fg=red>$0</>',
+            '<fg=magenta>\${$1}</>',
+            '$1 <fg=yellow>[$2]</>',
+            '─ <fg=red>$1</>',
+            '─ <fg=blue>$1</>',
+            '<fg=green>$0</>',
         ], $tree);
     }
 }
