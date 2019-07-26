@@ -1,5 +1,9 @@
 # MCStreetguy.FusionDebugger
 
+**PLEASE NOTE! This plugin is currently work in progress and alls of it's parts are subject to change probably! You should not rely on this in a production environment yet as it is not proven to be stable!**
+
+-------
+
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
 - [MCStreetguy.FusionDebugger](#mcstreetguyfusiondebugger)
@@ -25,13 +29,12 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
 **What is this plugin capable of?**
 
 - Linting fusion files for syntax errors
-- Debugging single prototype definitions
-- Debugging the whole prototype hierachie
+- Debugging fully merged prototype definitions
 - Visualizing (parts of) the combined object tree
 
 **Why do I need it?**
 
-Short answer: You don't.
+Short answer: You don't necessarily.
 
 **But then why should I want to have it?**
 
@@ -68,23 +71,11 @@ _to be written_
 
 ## Reference
 
+### Commands
+
 The plugin provides several commands to the Flow CLI.
 Each command has a detailled help text available to guide you through it's usage.
-These are listed below as reference.
-
-``` plain
-PACKAGE "MCSTREETGUY.FUSIONLINTER":
--------------------------------------------------------------------------------
-  fusion:lint                              Lint the existing Fusion code.
-  fusion:debug                             Debug the existing Fusion code.
-  fusion:showobjecttree                    Show the merged fusion object tree.
-  fusion:showprototypehierachie            Show the merged fusion prototype
-                                           configuration.
-
-
-```
-
-### Commands
+These are listed below for reference.
 
 #### `fusion:lint`
 
@@ -159,6 +150,9 @@ DESCRIPTION:
 ```
 
 ### Configuration
+
+The plugin comes with minimal configuration options available.
+These are listed below for reference.
 
 #### `MCStreetguy.FusionDebugger.fusionFilePathPatterns`
 
