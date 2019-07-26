@@ -188,7 +188,7 @@ class FusionCommandController extends AbstractCommandController
 
         if ($noFlat === false) {
             $output = $this->output;
-            $definition = $this->debugger->flattenFusionDefinition($definition, function() use ($output) {
+            $definition = $this->debugger->flattenFusionDefinition($definition, function () use ($output) {
                 return $output->askConfirmation('Continue?');
             });
             Arrays::removeEmptyElementsRecursively($definition);

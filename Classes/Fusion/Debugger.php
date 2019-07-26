@@ -181,30 +181,30 @@ class Debugger
                 continue;
             }
 
-            if ((
-                count($value) === 3 &&
-                array_key_exists(self::OBJECT_TYPE_KEY, $value) &&
-                array_key_exists(self::EXPRESSION_KEY, $value) &&
-                array_key_exists(self::VALUE_KEY, $value)
-            )) {
-                if (!empty($value[self::OBJECT_TYPE_KEY])) {
-                    $tmpKey = $key . ' [' . $value[self::OBJECT_TYPE_KEY] . ']';
+            // if ((
+            //     count($value) === 3 &&
+            //     array_key_exists(self::OBJECT_TYPE_KEY, $value) &&
+            //     array_key_exists(self::EXPRESSION_KEY, $value) &&
+            //     array_key_exists(self::VALUE_KEY, $value)
+            // )) {
+            //     if (!empty($value[self::OBJECT_TYPE_KEY])) {
+            //         $tmpKey = $key . ' [' . $value[self::OBJECT_TYPE_KEY] . ']';
 
-                    if (!$this->isPrototypeKnown($value[self::OBJECT_TYPE_KEY])) {
-                        $tmpKey .= ' (?)';
-                    }
+            //         if (!$this->isPrototypeKnown($value[self::OBJECT_TYPE_KEY])) {
+            //             $tmpKey .= ' (?)';
+            //         }
 
-                    $results[$key] = 'prototype(' . $value[self::OBJECT_TYPE_KEY] . ')';
-                } elseif (!empty($value[self::VALUE_KEY])) {
-                    $results[$key] = $value[self::VALUE_KEY];
-                } elseif (!empty($value[self::EXPRESSION_KEY])) {
-                    $results[$key] = '${' . $value[self::EXPRESSION_KEY] . '}';
-                } else {
-                    $results[$key] = $this->flattenFusionDefinition($value, $callback);
-                }
+            //         $results[$key] = 'prototype(' . $value[self::OBJECT_TYPE_KEY] . ')';
+            //     } elseif (!empty($value[self::VALUE_KEY])) {
+            //         $results[$key] = $value[self::VALUE_KEY];
+            //     } elseif (!empty($value[self::EXPRESSION_KEY])) {
+            //         $results[$key] = '${' . $value[self::EXPRESSION_KEY] . '}';
+            //     } else {
+            //         $results[$key] = $this->flattenFusionDefinition($value, $callback);
+            //     }
 
-                continue;
-            }
+            //     continue;
+            // }
 
             if (!empty($value[self::OBJECT_TYPE_KEY])) {
                 $objectType = $value[self::OBJECT_TYPE_KEY];
