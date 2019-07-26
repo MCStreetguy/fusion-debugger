@@ -61,7 +61,7 @@ class Debugger
      *
      * @param string $name The prototype name to retrieve
      * @param bool $returnBare Return the plain definition and don't merge anything
-     * @return array The merged prototype definition
+     * @return array The requested prototype definition
      */
     public function loadPrototype(string $name, bool $returnBare = false)
     {
@@ -76,14 +76,43 @@ class Debugger
         return $this->mergePrototypeChain($name, $prototypes[$name]);
     }
 
-    public function loadAllDefinitions()
+    /**
+     * Load all prototype definitions.
+     *
+     * @param bool $returnBare Return the plain definitions and don't merge anything
+     * @return array All available prototype definitions
+     */
+    public function loadAllDefinitions(bool $returnBare = false)
     {
-        // Load (and combine?) all prototype definitions
+        $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
+
+        if ($returnBare === false) {
+            foreach ($prototypes as $key => &$value) {
+                $value = $this->mergePrototypeChain($key, $value);
+            }
+        }
+
+        return $prototypes;
     }
 
+    /**
+     * Get the fusion object tree, optionally filtered by a path.
+     *
+     * @param string $path A path to retrieve from the object tree (in form of "foo.bar.baz")
+     * @return array|mixed The loaded object tree or the value found at the given path
+     */
     public function getObjectTree(string $path = null)
     {
-        // Retrieve the object tree, optionally filtered by the given path
+        $objectTree = $this->loadFusionTree();
+
+        // Remove the prototypes key as we have seperate methods for that
+        unset($objectTree[self::PROTOTYPES_KEY]);
+
+        if ($path !== null) {
+            return Arrays::getValueByPath($objectTree, $path);
+        }
+
+        return $objectTree;
     }
 
     // Helper methods
@@ -116,6 +145,13 @@ class Debugger
         return $this->fusionTree;
     }
 
+    /**
+     * Retrieve the prototype chain for the given base type and merge the corresponding definitions together.
+     *
+     * @param string $basePrototype The base prototype name to resolve
+     * @param array $bareDefinition The plain prototype definition of the prototype
+     * @return array The resolved definition
+     */
     protected function mergePrototypeChain(string $basePrototype, array $bareDefinition)
     {
         if (empty($bareDefinition) || !array_key_exists(self::PROTOTYPE_CHAIN_KEY, $bareDefinition)) {
@@ -205,6 +241,7 @@ class Debugger
      * ```
      * which is neither pretty or useful.
      *
+     * @see https://github.com/neos/neos-development-collection/blob/3.3/Neos.Fusion/Classes/Core/Runtime.php#L141
      * @param array $definition The prototype definition to flatten.
      * @return array The flattened prototype definition
      */
