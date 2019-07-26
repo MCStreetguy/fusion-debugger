@@ -287,9 +287,9 @@ class FusionCommandController extends AbstractCommandController
                 $tree[] = $prefix . $key . ' => false';
             } elseif (empty($value)) { // Render a placeholder to show that the key is explictly empty
                 $tree[] = $prefix . $key . ' => <empty>';
-            } elseif ($key === '__eelExpression') { // Surround eel expressions with '${...}' to make them look like such
+            } elseif ($key === '__eelExpression' && substr($value, 0, 2) !== '${') { // Surround eel expressions with '${...}' to make them look like such
                 $tree[] = $prefix . $key . ' => ${' . $value . '}';
-            } elseif ($type === 'string' && $key !== '__objectType') { // Sourround strings that are not object names with quotation marks
+            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${') { // Sourround strings that are not object names with quotation marks
                 $tree[] = $prefix . $key . ' => "' . $value . '"';
             } else { // Render the static 'key => value' label for all other cases
                 $tree[] = $prefix . $key . ' => ' . $value;
