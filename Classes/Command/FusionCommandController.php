@@ -69,7 +69,7 @@ class FusionCommandController extends AbstractCommandController
      */
     public function lintCommand(string $packageKey = null, bool $verbose = false)
     {
-        $filesToLint = $this->loadFusionFiles($packageKey);
+        $filesToLint = $this->files->load($packageKey);
         $totalCount = count($filesToLint);
         $errors = 0;
 
@@ -81,7 +81,6 @@ class FusionCommandController extends AbstractCommandController
                 );
             } catch (Exception $e) {
                 $containingPackageKey = $file->getPackageKey();
-                $containingPackage = $this->packageManager->getPackage($containingPackageKey);
                 $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
 
                 $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
@@ -112,13 +111,15 @@ class FusionCommandController extends AbstractCommandController
      *
      * @return void
      */
-    public function debugCommand()
+    public function debugFilesCommand()
     {
-        $files = $this->loadFusionFiles();
+        $files = $this->files->load();
 
         foreach ($files as $file) {
+            $this->outputBorder();
             $this->outputInfoMessage($file->getFullPath() . ':');
             $this->outputLine($file->getContents());
+            $this->outputBorder();
             $this->newline();
         }
     }
@@ -131,7 +132,6 @@ class FusionCommandController extends AbstractCommandController
      * @param string $path The fusion path to show (defaults to 'root')
      * @param bool $verbose Produce more detailled output
      * @return void
-     * @see mcstreetguy.fusiondebugger:fusion:showprototypehierachie
      */
     public function showObjectTreeCommand(string $path = 'root', bool $verbose = false)
     {
@@ -140,7 +140,7 @@ class FusionCommandController extends AbstractCommandController
             $this->quit(1);
         }
 
-        $files = $this->loadFusionFiles();
+        $files = $this->files->load();
         $objectTree = [];
 
         foreach ($files as $file) {
@@ -177,95 +177,13 @@ class FusionCommandController extends AbstractCommandController
      *
      * Show the merged fusion prototype configuration.
      *
-     * @param string $prototype Show information on the specified prototype only
-     * @param bool $verbose Produce more detailled output
+     * @param string $prototype The prototype to resolve the definition for
      * @return void
-     * @see mcstreetguy.fusiondebugger:fusion:showobjecttree
      */
-    public function showPrototypeHierachieCommand(string $prototype = null, bool $verbose = false)
+    public function debugPrototypeCommand(string $prototype)
     {
-        $files = $this->loadFusionFiles();
-        $objectTree = [];
-
-        foreach ($files as $file) {
-            $filePath = $file->getFullPath();
-
-            try {
-                $objectTree = $this->fusionParser->parse($file->getContents(), $filePath, $objectTree);
-            } catch (Exception $e) {
-                $this->outputErrorMessage("Failed to parse fusion file '$filePath'!");
-                $this->quit(1);
-            }
-
-            if ($verbose === true) {
-                $this->outputInfoMessage("Loaded file '$filePath'.");
-            }
-        }
-
-        if ($verbose === true) {
-            $this->outputInfoMessage('Building object hierachie...');
-        }
-
-        $path = '__prototypes';
-        $subtree = $objectTree[$path];
-
-        if ($prototype !== null && !empty($prototype)) {
-            if (!array_key_exists($prototype, $subtree)) {
-                $this->outputErrorMessage("There is no definition for prototype of name '$prototype'!");
-                $this->quit(4);
-            }
-
-            $path = $prototype;
-            $subtree = $subtree[$prototype];
-        }
-
-        $this->outputTree($subtree, $path);
-    }
-
-    // Service methods
-
-    /**
-     * @return FusionFile[]
-     */
-    protected function loadFusionFiles(string $fromPackageKey = null)
-    {
-        $foundFusionFiles = [];
-
-        if ((
-            $fromPackageKey !== null &&
-            $this->packageManager->isPackageKeyValid($fromPackageKey) &&
-            $this->packageManager->isPackageAvailable($fromPackageKey)
-        )) {
-            $sourcePackages = [$this->packageManager->getPackage($fromPackageKey)];
-        } else {
-            $sourcePackages = $this->packageManager->getActivePackages();
-        }
-
-        /** @var PackageInterface $package */
-        foreach ($sourcePackages as $package) {
-            $packageKey = $package->getPackageKey();
-
-            if ($this->packageManager->isPackageFrozen($packageKey)) {
-                //* If the package is frozen it has no impact on fusion rendering and thus can safely be skipped
-                continue;
-            }
-
-            $basePath = "resource://$packageKey/Private/Fusion";
-
-            foreach ($this->settings['fusionFilePathPatterns'] as $basePathPattern) {
-                $basePath = str_replace('@package', $packageKey, $basePathPattern);
-
-                if (file_exists($basePath) && is_dir($basePath) && is_readable($basePath)) {
-                    foreach (Files::readDirectoryRecursively($basePath, '.fusion') as $file) {
-                        $foundFusionFiles[] = new FusionFile($packageKey, $file);
-                    }
-                }
-            }
-        }
-
-        //? Caching?
-
-        return $foundFusionFiles;
+        $definition = $this->debugger->loadPrototype($prototype);
+        $this->outputTree($definition);
     }
 
     protected function transformExceptionMessage(\Exception $e)

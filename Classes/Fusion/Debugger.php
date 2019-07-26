@@ -5,11 +5,11 @@ namespace MCStreetguy\FusionDebugger\Fusion;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
-use Neos\Flow\Annotations as Flow;
-use MCStreetguy\FusionDebugger\Fusion\Utility\Files;
-use Neos\Fusion\Core\Parser;
 use MCStreetguy\FusionDebugger\Exceptions\FusionParseErrorException;
 use MCStreetguy\FusionDebugger\Exceptions\MissingPrototypeDefinitionException;
+use MCStreetguy\FusionDebugger\Fusion\Utility\Files;
+use Neos\Flow\Annotations as Flow;
+use Neos\Fusion\Core\Parser;
 use Neos\Utility\Arrays;
 
 /**
@@ -20,6 +20,7 @@ class Debugger
     const EXPRESSION_KEY = '__eelExpression';
     const OBJECT_TYPE_KEY = '__objectType';
     const PROTOTYPE_CHAIN_KEY = '__prototypeChain';
+    const PROTOTYPE_OBJECT_NAME_KEY = '__prototypeObjectName';
     const PROTOTYPES_KEY = '__prototypes';
     const VALUE_KEY = '__value';
 
@@ -38,25 +39,28 @@ class Debugger
     /**
      * @var array
      */
-    protected $fusionTree;
+    protected $fusionTree = [];
+
+    /**
+     *
+     */
+    public function isPrototypeKnown(string $name)
+    {
+        return array_key_exists($name, $this->loadFusionTree()[self::PROTOTYPES_KEY]);
+    }
 
     /**
      *
      */
     public function loadPrototype(string $name)
     {
-        // Load and combine a single prototype defintion
-
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
 
         if (!array_key_exists($name, $prototypes)) {
             throw MissingPrototypeDefinitionException::forPrototypeName($name);
         }
 
-        $bareDefinition = $prototypes[$name];
-        $mergedDefinition = $this->mergePrototypeChain($bareDefinition);
-
-        return $mergedDefinition;
+        return $this->mergePrototypeChain($name, $prototypes[$name]);
     }
 
     public function loadAllDefinitions()
@@ -99,24 +103,76 @@ class Debugger
         return $this->fusionTree;
     }
 
-    /**
-     * Retrieve all parent prototyps from the inheritance chain and merge their configuration together.
-     *
-     * @param array $definition The bar definition to merge
-     * @return array The merged definition
-     */
-    protected function mergePrototypeChain(array $definition)
+    protected function mergePrototypeChain(string $basePrototype, array $bareDefinition)
     {
-        if (empty($definition) || !array_key_exists(self::PROTOTYPE_CHAIN_KEY, $definition)) {
-            return $definition;
+        if (empty($bareDefinition) || !array_key_exists(self::PROTOTYPE_CHAIN_KEY, $bareDefinition)) {
+            return $bareDefinition;
         }
 
-        foreach ($definition[self::PROTOTYPE_CHAIN_KEY] as $chainedPrototype) {
-            $chainedDefinition = $this->loadPrototype($chainedPrototype);
-            $definition = Arrays::arrayMergeRecursiveOverrule($definition, $chainedDefinition, false, false);
+        $prototypeChain = $bareDefinition[self::PROTOTYPE_CHAIN_KEY];
+        $rootPrototype = array_shift($prototypeChain);
+        $definition = $this->loadPrototype($rootPrototype);
+
+        if (count($prototypeChain) > 0) {
+            foreach ($prototypeChain as $prototype) {
+                $chainedDefinition = $this->loadPrototype($prototype);
+                $definition = $this->mergeFusionDefinitions($definition, $chainedDefinition);
+            }
         }
+
+        $definition = $this->mergeFusionDefinitions($definition, $bareDefinition);
+
+        unset($definition[self::PROTOTYPE_CHAIN_KEY]);
 
         return $definition;
     }
-}
 
+    protected function mergeFusionDefinitions(array $baseDefinition, array $extenderDefinition)
+    {
+        foreach ($extenderDefinition as $key => $value) {
+            if (is_object($value)) {
+                // Should not happen normally but just in case that we receive an object we convert it to an array
+                $value = Arrays::convertObjectToArray($value);
+            }
+
+            if (!array_key_exists($key, $baseDefinition) || !is_array($value)) {
+                // Key does not exist in definition or the value is a simple type, thus is set directly
+                $baseDefinition[$key] = $value;
+            } elseif (array_key_exists(self::OBJECT_TYPE_KEY, $value)) {
+                // Key is present in definition but replaces previous value, thus is overridden
+                $baseDefinition[$key] = $value;
+            } else {
+                // Key is present in definition and extends previous value, thus gets merged properly
+                $baseDefinition[$key] = $this->mergeFusionDefinitions($baseDefinition[$key], $value);
+            }
+        }
+
+        return $baseDefinition;
+    }
+
+    protected function flattenFusionDefinition(array &$definition)
+    {
+        foreach ($definition as $key => &$value) {
+            if ((
+                !is_array($value) ||
+                !(
+                    array_key_exists(self::OBJECT_TYPE_KEY, $value) &&
+                    array_key_exists(self::VALUE_KEY, $value) &&
+                    array_key_exists(self::EXPRESSION_KEY, $value)
+                )
+            )) {
+                continue;
+            }
+
+            if (!empty($value[self::OBJECT_TYPE_KEY]) && !$this->isPrototypeKnown($value[self::OBJECT_TYPE_KEY])) {
+                $value = 'prototype<unknown[' . $value[self::OBJECT_TYPE_KEY] . ']>';
+            } elseif (!empty($value[self::OBJECT_TYPE_KEY])) {
+                $value = 'prototype<' . $value[self::OBJECT_TYPE_KEY] . '>';
+            } elseif (!empty($value[self::VALUE_KEY])) {
+                $value = $value[self::VALUE_KEY];
+            } elseif (!empty($value[self::EXPRESSION_KEY])) {
+                $value = '${' . $value[self::EXPRESSION_KEY] . '}';
+            }
+        }
+    }
+}
