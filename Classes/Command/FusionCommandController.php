@@ -178,12 +178,30 @@ class FusionCommandController extends AbstractCommandController
      * Show the merged fusion prototype configuration.
      *
      * @param string $prototype The prototype to resolve the definition for
+     * @param bool $noColor Suppress any colorized output
+     * @param bool $noFlat Don't flatten the prototype definition array
      * @return void
      */
-    public function debugPrototypeCommand(string $prototype)
+    public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $noFlat = false)
     {
         $definition = $this->debugger->loadPrototype($prototype);
-        $this->outputTree($definition);
+
+        if ($noFlat === false) {
+            $output = $this->output;
+            $definition = $this->debugger->flattenFusionDefinition($definition, function() use ($output) {
+                return $output->askConfirmation('Continue?');
+            });
+            Arrays::removeEmptyElementsRecursively($definition);
+            unset($definition[Debugger::PROTOTYPE_OBJECT_NAME_KEY]);
+        }
+
+        $tree = $this->outputTree($definition, $prototype, !$noColor);
+
+        if ($noColor === false) {
+            $tree = $this->colorizeTree($tree);
+            $this->output(implode(PHP_EOL, $tree));
+            $this->newline();
+        }
     }
 
     protected function transformExceptionMessage(\Exception $e)
@@ -268,7 +286,7 @@ class FusionCommandController extends AbstractCommandController
             } elseif ($value === false) { // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => false';
             } elseif (empty($value)) { // Render a placeholder to show that the key is explictly empty
-                $tree[] = $prefix . $key . ' => [EMPTY]';
+                $tree[] = $prefix . $key . ' => <empty>';
             } elseif ($key === '__eelExpression') { // Surround eel expressions with '${...}' to make them look like such
                 $tree[] = $prefix . $key . ' => ${' . $value . '}';
             } elseif ($type === 'string' && $key !== '__objectType') { // Sourround strings that are not object names with quotation marks
@@ -288,5 +306,22 @@ class FusionCommandController extends AbstractCommandController
 
         // Return the tree as array of strings for internal further use
         return $tree;
+    }
+
+    protected function colorizeTree(array $tree)
+    {
+        return preg_replace([
+            '/\$\{(.+)\}/',                 // 1. EEL expressions
+            '/(\w+) \[([a-zA-Z0-9.:]+)\]/', // 2. Object names
+            '/─ (__[\w.:-]+)/',             // 3. internal properties
+            '/─ ([\w.:-]+)/',               // 4. other properties
+            '/".+"/',                       // 5. string values
+        ], [
+            '<fg=magenta>\${$1}</>',        // 1. Magenta
+            '$1 <fg=yellow>[$2]</>',        // 2. Yellow
+            '─ <fg=red>$1</>',              // 3. Red
+            '─ <fg=blue>$1</>',             // 4. Blue
+            '<fg=green>$0</>'               // 5. Green
+        ], $tree);
     }
 }
