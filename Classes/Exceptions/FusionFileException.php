@@ -3,6 +3,9 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
 
 use Neos\Flow\Exception;
 
+/**
+ * A fusion file exception.
+ */
 class FusionFileException extends Exception
 {
     /**

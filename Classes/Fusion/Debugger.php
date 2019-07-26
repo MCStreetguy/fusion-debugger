@@ -16,6 +16,7 @@ use Neos\Utility\Arrays;
  * The main debugging component for Fusion.
  *
  * @Flow\Scope("singleton")
+ * @api
  */
 class Debugger
 {
@@ -45,7 +46,10 @@ class Debugger
     protected $fusionTree = [];
 
     /**
+     * Check if the named prototype is known by the fusion runtime.
      *
+     * @param string $name The prototype name to check
+     * @return bool 'true' if the prototype could be found, 'false' otherwise
      */
     public function isPrototypeKnown(string $name)
     {
@@ -53,14 +57,20 @@ class Debugger
     }
 
     /**
+     * Load a full prototype definition by it's name.
      *
+     * @param string $name The prototype name to retrieve
+     * @param bool $returnBare Return the plain definition and don't merge anything
+     * @return array The merged prototype definition
      */
-    public function loadPrototype(string $name)
+    public function loadPrototype(string $name, bool $returnBare = false)
     {
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
 
         if (!array_key_exists($name, $prototypes)) {
             throw MissingPrototypeDefinitionException::forPrototypeName($name);
+        } elseif ($returnBare === true) {
+            return $prototypes[$name];
         }
 
         return $this->mergePrototypeChain($name, $prototypes[$name]);

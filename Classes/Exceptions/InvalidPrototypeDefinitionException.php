@@ -3,6 +3,9 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
 
 use Neos\Flow\Exception;
 
+/**
+ * An exception for an invalid prototype definition.
+ */
 class InvalidPrototypeDefinitionException extends Exception
 {
     public static function forPrototypeName(string $name)

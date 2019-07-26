@@ -12,6 +12,7 @@ use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
  * An immutable fusion file representation, containing metadata and tunneling access to file contents.
  *
  * @Flow\Scope("prototype")
+ * @internal
  */
 class FusionFile
 {

@@ -11,6 +11,7 @@ use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("singleton")
+ * @internal
  */
 class FusionFileService
 {
