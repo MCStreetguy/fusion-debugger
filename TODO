@@ -1,4 +1,5 @@
 TODO's
 
-- [ ] Add color highlighting for tree views
-- [ ] Filter empty values by default (?)
+- [x] Add color highlighting for tree views
+- [x] Filter empty values by default
+- [ ] Sort all keys by their @position property
