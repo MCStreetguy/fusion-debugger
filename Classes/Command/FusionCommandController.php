@@ -5,14 +5,13 @@ namespace MCStreetguy\FusionDebugger\Command;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
+use MCStreetguy\FusionDebugger\Fusion\Debugger;
+use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use Neos\Utility\Arrays;
-use MCStreetguy\FusionDebugger\Fusion\Debugger;
-use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 
 /**
  * @Flow\Scope("singleton")
@@ -267,17 +266,17 @@ class FusionCommandController extends AbstractCommandController
     protected function colorizeTree(array $tree)
     {
         return preg_replace([
-            '/\$\{(.+)\}/',                 // 1. EEL expressions
+            '/\$\{(.+)\}/', // 1. EEL expressions
             '/(\w+) \[([a-zA-Z0-9.:]+)\]/', // 2. Object names
-            '/─ (__[\w.:-]+)/',             // 3. internal properties
-            '/─ ([\w.:-]+)/',               // 4. other properties
-            '/".+"/',                       // 5. string values
+            '/─ (__[\w.:-]+)/', // 3. internal properties
+            '/─ ([\w.:-]+)/', // 4. other properties
+            '/".+"/', // 5. string values
         ], [
-            '<fg=magenta>\${$1}</>',        // 1. Magenta
-            '$1 <fg=yellow>[$2]</>',        // 2. Yellow
-            '─ <fg=red>$1</>',              // 3. Red
-            '─ <fg=blue>$1</>',             // 4. Blue
-            '<fg=green>$0</>'               // 5. Green
+            '<fg=magenta>\${$1}</>', // 1. Magenta
+            '$1 <fg=yellow>[$2]</>', // 2. Yellow
+            '─ <fg=red>$1</>', // 3. Red
+            '─ <fg=blue>$1</>', // 4. Blue
+            '<fg=green>$0</>', // 5. Green
         ], $tree);
     }
 }

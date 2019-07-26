@@ -5,8 +5,8 @@ namespace MCStreetguy\FusionDebugger\Utility;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
-use Neos\Flow\Annotations as Flow;
 use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * An immutable fusion file representation, containing metadata and tunneling access to file contents.

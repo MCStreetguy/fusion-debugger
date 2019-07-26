@@ -1,6 +1,10 @@
 <?php
 namespace MCStreetguy\FusionDebugger\Exceptions;
 
+/*
+ * This file is part of the MCStreetguy.FusionDebugger package.
+ */
+
 use Neos\Flow\Exception;
 
 /**
