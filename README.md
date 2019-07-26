@@ -15,12 +15,11 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Usage](#usage)
   - [Reference](#reference)
     - [Commands](#commands)
-      - [`fusion:lint`](#fusionlint)
-      - [`fusion:debug`](#fusiondebug)
+      - [`fusion:debugprototype`](#fusiondebugprototype)
       - [`fusion:showobjecttree`](#fusionshowobjecttree)
-      - [`fusion:showprototypehierachie`](#fusionshowprototypehierachie)
+      - [`fusion:lint`](#fusionlint)
     - [Configuration](#configuration)
-      - [`MCStreetguy.FusionDebugger.fusionFilePathPatterns`](#mcstreetguyfusiondebuggerfusionfilepathpatterns)
+      - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
   - [Contributing](#contributing)
   - [Versioning](#versioning)
   - [Authors](#authors)
@@ -78,85 +77,36 @@ _to be written_
 The plugin provides several commands to the Flow CLI.
 Each command has a detailled help text available to guide you through it's usage.
 These are listed below for reference.
+Please see the respective help pages for more information.
 
-#### `fusion:lint`
+#### `fusion:debugprototype`
+  
+> `mcstreetguy.fusiondebugger:fusion:debugprototype [--no-color] [--not-flat] <prototype>`
 
-Iterate each fusion file and try to parse it. If any syntax error occurres it'll be reported to the user with the corresponding file path and containing package.
-
-``` plain
-COMMAND:
-  mcstreetguy.fusiondebugger:fusion:lint
-
-USAGE:
-  ./flow fusion:lint [<options>]
-
-OPTIONS:
-  --package-key        The package to load the Fusion code from.
-  --verbose            Produce additional output with additional information.
-
-DESCRIPTION:
-  Lint the existing Fusion code.
-```
-
-#### `fusion:debug`
-
-Print all the parsed fusion code to the terminal, in loading order.
-
-``` plain
-COMMAND:
-  mcstreetguy.fusiondebugger:fusion:debug
-
-USAGE:
-  ./flow fusion:debug
-
-DESCRIPTION:
-  Debug the existing Fusion code.
-```
+Reads the definition of the requested prototype from the `__prototypes` key in the parsed object tree and resolves the contained prototype chain very carefully so that the result contains all properties, either inherited or explictely defined.
+For better readability, this command also includes something similar to syntax highlighting as several parts of the built tree are colored (such as eel expressions, further prototype names or just plain strings). Furthermore it flattens the resulting data by removing empty properties and combining the internal properties for e.g. plain values (as these are stored with three properties but could be displayed directly without an array structure).
+These additional behaviour can be suppressed by specifying the options `--no-color` or `--not-flat` if it corrupts the resulting data or your terminal does not support ANSI colors.
 
 #### `fusion:showobjecttree`
 
-Visualize the fusion object tree.
+> `mcstreetguy.fusiondebugger:fusion:showobjecttree [--path <path>]`
 
-``` plain
-COMMAND:
-  mcstreetguy.fusiondebugger:fusion:showobjecttree
+Builds the object tree from all Fusion files and displays it in an ASCII tree structure (excluding the `__prototypes` key as we got the above command for that).
 
-USAGE:
-  ./flow fusion:showobjecttree [<options>]
+#### `fusion:lint`
 
-OPTIONS:
-  --path               The fusion path to show (defaults to 'root')
-  --verbose            Produce more detailled output
+> `mcstreetguy.fusiondebugger:fusion:lint [--package-key <packageKey>] [--verbose]`
 
-DESCRIPTION:
-  Show the merged fusion object tree.
-```
-
-#### `fusion:showprototypehierachie`
-
-Show the combined prototype hierachie, or the sole definition of the given prototype.
-
-``` plain
-COMMAND:
-  mcstreetguy.fusiondebugger:fusion:showprototypehierachie
-
-USAGE:
-  ./flow fusion:showprototypehierachie [<options>]
-
-OPTIONS:
-  --prototype          Show information on the specified prototype only
-  --verbose            Produce more detailled output
-
-DESCRIPTION:
-  Show the merged fusion prototype configuration.
-```
+Checks all Fusion files individually for syntax errors and lists the incorrect files with their associated package and file path.
+This command was intended to programmatically check the correctness of the Fusion source code and is in fact still an experiment but listed for the sake of completeness.
 
 ### Configuration
 
 The plugin comes with minimal configuration options available.
 These are listed below for reference.
+All options are lacking the package name prefix, prepend them with `MCStreetguy.FusionDebugger.` when you want to modify them.
 
-#### `MCStreetguy.FusionDebugger.fusionFilePathPatterns`
+#### `fusionFilePathPatterns`
 
 An array of file path patterns used to search for Fusion files that will be loaded.  
 The default path `resource://@package/Private/Fusion/` is already present for ease of use.
