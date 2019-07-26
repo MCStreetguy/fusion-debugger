@@ -107,47 +107,21 @@ class FusionCommandController extends AbstractCommandController
      *
      * Show the merged fusion object tree.
      *
-     * @param string $path The fusion path to show (defaults to 'root')
-     * @param bool $verbose Produce more detailled output
+     * @param string $path A fusion path to filter the object tree by
      * @return void
      */
-    public function showObjectTreeCommand(string $path = 'root', bool $verbose = false)
+    public function showObjectTreeCommand(string $path = null)
     {
         if ($path === '__prototypes') {
             $this->outputWarningMessage('Please use the fusion:showprototypehierachie command to debug Fusion prototypes!');
             $this->quit(1);
         }
 
-        $files = $this->files->load();
-        $objectTree = [];
+        $tree = $this->debugger->getObjectTree($path);
+        $ascii = $this->buildAsciiTree($tree, ($path ?: '.'));
 
-        foreach ($files as $file) {
-            $filePath = $file->getFullPath();
-            try {
-                $objectTree = $this->fusionParser->parse($file->getContents(), $filePath, $objectTree);
-            } catch (Exception $e) {
-                $this->outputErrorMessage("Failed to parse fusion file '$filePath'!");
-                $this->quit(2);
-            }
-
-            if ($verbose === true) {
-                $this->outputInfoMessage("Loaded file '$filePath'.");
-            }
-        }
-
-        if ($verbose === true) {
-            $this->outputInfoMessage('Building object hierachie...');
-        }
-
-        unset($objectTree['__prototypes']);
-        $subtree = Arrays::getValueByPath($objectTree, $path);
-
-        if ($subtree === null) {
-            $this->outputErrorMessage("There is no such path '$path' in the Fusion object tree!");
-            $this->quit(3);
-        }
-
-        $this->outputTree(Arrays::convertObjectToArray($subtree), $path);
+        $this->output(implode(PHP_EOL, $ascii));
+        $this->newline();
     }
 
     /**
@@ -168,17 +142,24 @@ class FusionCommandController extends AbstractCommandController
             $definition = $this->debugger->flattenPrototypeDefinition($definition);
         }
 
-        $tree = $this->outputTree($definition, $prototype, !$noColor);
+        $tree = $this->buildAsciiTree($definition, $prototype);
 
         if ($noColor === false) {
             $tree = $this->colorizeTree($tree);
-            $this->output(implode(PHP_EOL, $tree));
-            $this->newline();
         }
+
+        $this->output(implode(PHP_EOL, $tree));
+        $this->newline();
     }
 
     // Service methods
 
+    /**
+     * Output a short version of the given exception message.
+     *
+     * @param \Exception $e The source exception
+     * @return void
+     */
     protected function transformExceptionMessage(\Exception $e)
     {
         if ($e->getCode() === 1180600696 || $e->getCode() === 1180600697 || $e->getCode() === 1180547190) {
@@ -223,7 +204,7 @@ class FusionCommandController extends AbstractCommandController
      * @param bool $suppressOutput Suppress any output (mainly used internally for recursive rendering)
      * @return array
      */
-    protected function outputTree(array $data, string $root = '.', bool $suppressOutput = false)
+    protected function buildAsciiTree(array $data, string $root = '.')
     {
         $tree = [$root];
         $cycle = 0;
@@ -241,7 +222,7 @@ class FusionCommandController extends AbstractCommandController
 
             if ($type === 'array') { // Render the tree for the nested array and append it to the current
                 $isFirst = true;
-                $nestedTree = $this->outputTree($value, $key, true);
+                $nestedTree = $this->buildAsciiTree($value, $key);
 
                 foreach ($nestedTree as $nestedLine) {
                     if ($isFirst === true) { // Don't indent the first line of the tree as we already have proper indentation
@@ -273,16 +254,16 @@ class FusionCommandController extends AbstractCommandController
             $cycle++;
         }
 
-        // If were not in a nested method call, append a newline and output the tree
-        if ($suppressOutput === false) {
-            $tree[] = '';
-            $this->output(implode(PHP_EOL, $tree));
-        }
-
         // Return the tree as array of strings for internal further use
         return $tree;
     }
 
+    /**
+     * Add colors to the ascii tree structure by regex replacements.
+     *
+     * @param array $tree The source ascii tree, line by line
+     * @return array The parsed ascii tree, line by line
+     */
     protected function colorizeTree(array $tree)
     {
         return preg_replace([
