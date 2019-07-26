@@ -2,6 +2,8 @@
 
 ## Supported Versions
 
+**Please note** that only the latest version of the plugin will receive any update, including security patches!
+
 | Version | Supported |
 | ------- | --------- |
 | 0.1-alpha | :x: |
