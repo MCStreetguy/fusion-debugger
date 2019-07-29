@@ -14,8 +14,7 @@
     "support": {
         "source": "https://github.com/MCStreetguy/fusion-debugger",
         "issues": "https://github.com/MCStreetguy/fusion-debugger/issues",
-        "docs": "https://flowframework.readthedocs.io/en/4.3/",
-        "chat": "https://slack.neos.io/",
+        "docs": "https://github.com/MCStreetguy/fusion-debugger/blob/master/README.md",
         "email": "maximilianschmidt404@gmail.com"
     },
     "require": {
