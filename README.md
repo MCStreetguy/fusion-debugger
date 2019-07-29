@@ -104,7 +104,7 @@ This command was intended to programmatically check the correctness of the Fusio
 
 The plugin comes with minimal configuration options available.
 These are listed below for reference.
-All options are lacking the package name prefix, prepend them with `MCStreetguy.FusionDebugger.` when you want to modify them.
+All options are lacking the package name prefix for better readability, prepend them with `MCStreetguy.FusionDebugger.` when you want to modify them.
 
 #### `fusionFilePathPatterns`
 
@@ -117,10 +117,6 @@ The following placeholders can be used inside the pattern and will be exchanged 
 | **Placeholder** | **Description** |
 |-----------------|------------------------------------------------------------|
 | `@package` | The current package key from where the fusion gets loaded. |
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
