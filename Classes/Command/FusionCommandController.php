@@ -58,10 +58,11 @@ class FusionCommandController extends AbstractCommandController
     /**
      * Lint the existing Fusion code.
      *
-     * Lint the existing Fusion code.
+     * Checks all Fusion files individually for syntax errors and lists the
+     * incorrect files with their associated package, file path and contained error.
      *
-     * @param string $packageKey The package to load the Fusion code from.
-     * @param bool $verbose Produce additional output with additional information.
+     * @param string $packageKey The package to load the Fusion code from. If not given, all packages are linted.
+     * @param bool $verbose Produce more detailled output with additional information.
      * @return void
      */
     public function lintCommand(string $packageKey = null, bool $verbose = false)
@@ -93,21 +94,25 @@ class FusionCommandController extends AbstractCommandController
 
         $this->newline();
 
-        if ($errors <= 0) {
-            $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
-        } else {
+        if ($errors > 0) {
             $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
             $this->outputWarningMessage('There may be additional output containing more information above.');
+            $this->quit(1);
         }
+
+        $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
+        $this->quit(0);
     }
 
     /**
      * Show the merged fusion object tree.
      *
-     * Show the merged fusion object tree.
+     * Builds the object tree from all fusion files and displays it in an ASCII tree structure.
+     * Please not that this command does not reveal the __prototype key.
      *
      * @param string $path A fusion path to filter the object tree by
      * @return void
+     * @see mcstreetguy.fusiondebugger:fusion:debugprototype
      */
     public function showObjectTreeCommand(string $path = null)
     {
@@ -126,7 +131,17 @@ class FusionCommandController extends AbstractCommandController
     /**
      * Show the merged fusion prototype configuration.
      *
-     * Show the merged fusion prototype configuration.
+     * Reads the definition of the requested prototype from the '__prototypes' key in the parsed
+     * fusion object tree and resolves the contained prototype chain very carefully so that the result
+     * contains all properties, either inherited or explictely defined.
+     *
+     * For better readability, this command also includes something similar to syntax highlighting
+     * as several parts of the built tree are colored (such as eel expressions, further prototype names
+     * or just plain strings). Furthermore it flattens the resulting data by removing empty properties
+     * and combining the internal properties for e.g. plain values (as these are stored with three properties
+     * but could be displayed directly without an array structure).
+     * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
+     * if it corrupts the resulting data or your terminal does not support ANSI colors.
      *
      * @param string $prototype The prototype to resolve the definition for
      * @param bool $noColor Suppress any colorized output
