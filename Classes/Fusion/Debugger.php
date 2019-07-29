@@ -357,9 +357,11 @@ class Debugger
 
         // Move all meta keys to the beginning of the array
         $containedMetaKeys = preg_grep('/^@/', array_keys($results));
-        ksort($containedMetaKeys, (SORT_ASC | SORT_FLAG_CASE));
-        foreach ($containedMetaKeys as $key) {
-            $results = [$key => $results[$key]] + $results;
+        if (count($containedMetaKeys) > 0) {
+            sort($containedMetaKeys, (SORT_FLAG_CASE));
+            foreach (array_reverse($containedMetaKeys, true) as $key) {
+                $results = [$key => $results[$key]] + $results;
+            }
         }
 
         return $results;
