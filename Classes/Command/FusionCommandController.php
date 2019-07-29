@@ -18,6 +18,9 @@ use Neos\Fusion\Core\Runtime;
  */
 class FusionCommandController extends AbstractCommandController
 {
+    const PROTOTYPES_KEY_NAME = '__prototypes';
+    const RELATIVE_PATH_SUBTRACTOR_PATTERN = '/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i';
+
     /**
      * @Flow\InjectConfiguration
      * @var array
@@ -79,7 +82,7 @@ class FusionCommandController extends AbstractCommandController
                 );
             } catch (Exception $e) {
                 $containingPackageKey = $file->getPackageKey();
-                $relativeFilePath = preg_replace('/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i', '', $file->getFullPath());
+                $relativeFilePath = preg_replace(self::RELATIVE_PATH_SUBTRACTOR_PATTERN, '', $file->getFullPath());
 
                 $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
 
@@ -107,7 +110,7 @@ class FusionCommandController extends AbstractCommandController
     /**
      * Show the merged fusion object tree.
      *
-     * Builds the object tree from all fusion files and displays it in an ASCII tree structure.
+     * Builds the object tree from all fusion files and displays it in a tree structure.
      * Please not that this command does not reveal the __prototype key.
      *
      * @param string $path A fusion path to filter the object tree by
@@ -121,10 +124,10 @@ class FusionCommandController extends AbstractCommandController
             $this->quit(1);
         }
 
-        $tree = $this->debugger->getObjectTree($path);
-        $ascii = $this->buildAsciiTree($tree, ($path ?: '.'));
+        $objectTree = $this->debugger->getObjectTree($path);
+        $tree = $this->buildVisualFusionTree($objectTree, ($path ?: '.'));
 
-        $this->output(implode(PHP_EOL, $ascii));
+        $this->output(implode(PHP_EOL, $tree));
         $this->newline();
     }
 
@@ -156,7 +159,7 @@ class FusionCommandController extends AbstractCommandController
             $definition = $this->debugger->flattenPrototypeDefinition($definition);
         }
 
-        $tree = $this->buildAsciiTree($definition, $prototype);
+        $tree = $this->buildVisualFusionTree($definition, $prototype);
 
         if ($noColor === false) {
             $tree = $this->colorizeTree($tree);
@@ -206,11 +209,13 @@ class FusionCommandController extends AbstractCommandController
             1358418015,
         ])) { // no special treatment
             $this->outputErrorMessage($e->getMessage());
+        } else {
+            //TODO: We may not swallow remaining errors, output them too?
         }
     }
 
     /**
-     * Print a recursive fusion tree structure with ASCII chars to the terminal.
+     * Print a recursive fusion tree structure with box drawing characters to the terminal.
      * Additionally this returns the tree as array of strings.
      *
      * @param array $data The associative data to display
@@ -218,7 +223,7 @@ class FusionCommandController extends AbstractCommandController
      * @param bool $suppressOutput Suppress any output (mainly used internally for recursive rendering)
      * @return array
      */
-    protected function buildAsciiTree(array $data, string $root = '.')
+    protected function buildVisualFusionTree(array $data, string $root = '.')
     {
         $tree = [$root];
         $cycle = 0;
@@ -236,7 +241,7 @@ class FusionCommandController extends AbstractCommandController
 
             if ($type === 'array') { // Render the tree for the nested array and append it to the current
                 $isFirst = true;
-                $nestedTree = $this->buildAsciiTree($value, $key);
+                $nestedTree = $this->buildVisualFusionTree($value, $key);
 
                 foreach ($nestedTree as $nestedLine) {
                     if ($isFirst === true) { // Don't indent the first line of the tree as we already have proper indentation
@@ -273,10 +278,10 @@ class FusionCommandController extends AbstractCommandController
     }
 
     /**
-     * Add colors to the ascii tree structure by regex replacements.
+     * Add colors to the rendered tree structure by regex replacements.
      *
-     * @param array $tree The source ascii tree, line by line
-     * @return array The parsed ascii tree, line by line
+     * @param array $tree The source tree, line by line
+     * @return array The parsed tree, line by line
      */
     protected function colorizeTree(array $tree)
     {
