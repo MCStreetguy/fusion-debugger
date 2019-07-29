@@ -1,7 +1,7 @@
 {
     "name": "mcstreetguy/fusion-debugger",
     "type": "neos-plugin",
-    "description": "A simple linter command for debugging Fusion code.",
+    "description": "A debugger plugin for Neos.Fusion.",
     "license": "MIT",
     "readme": "README.md",
     "authors": [
@@ -19,8 +19,12 @@
         "email": "maximilianschmidt404@gmail.com"
     },
     "require": {
+        "php": ">=7.1",
         "neos/flow": "^4.3.0",
-        "neos/fusion": "*"
+        "neos/fusion": ">=3.3.0"
+    },
+    "require-dev": {
+        "kint-php/kint": "^3.2"
     },
     "autoload": {
         "psr-4": {
@@ -31,8 +35,5 @@
         "neos": {
             "package-key": "MCStreetguy.FusionDebugger"
         }
-    },
-    "require-dev": {
-        "kint-php/kint": "^3.2"
     }
 }
