@@ -177,7 +177,12 @@ class FusionCommandController extends AbstractCommandController
             $definition = $this->debugger->flattenPrototypeDefinition($definition);
         }
 
-        $tree = $this->debugger->buildVisualFusionTree($definition, $prototype);
+        $treeRoot = $prototype;
+        if ($noColor === false) {
+            $treeRoot = '<fg=yellow;options=bold>' . $treeRoot . '</>';
+        }
+
+        $tree = $this->debugger->buildVisualFusionTree($definition, $treeRoot);
 
         if ($noColor === false) {
             $tree = $this->colorizeTree($tree);
