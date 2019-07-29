@@ -2,3 +2,4 @@
 - [x] Filter empty values by default
 - [ ] Sort all keys by their @position property
 - [ ] Add a backend module with a collapsible tree structure
+- [ ] Add a progress bar to the lint command in non-verbose mode
