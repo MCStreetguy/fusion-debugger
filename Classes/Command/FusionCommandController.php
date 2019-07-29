@@ -153,6 +153,11 @@ class FusionCommandController extends AbstractCommandController
      * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
      * if it corrupts the resulting data or your terminal does not support ANSI colors.
      *
+     * If you encounter a '(?)' sign after a further prototype name, this means that the named prototype
+     * could not be found in the current prototype hierachie. These could probably cause rendering errors
+     * if there really is no such prototype defined, but it may be that it's just a recognition error.
+     * You should have a closer look on these properties and prototypes in either case!
+     *
      * @param string $prototype The prototype to resolve the definition for
      * @param bool $noColor Suppress any colorized output
      * @param bool $notFlat Don't flatten the prototype definition array
