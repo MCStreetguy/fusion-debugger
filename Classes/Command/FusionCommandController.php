@@ -249,6 +249,7 @@ class FusionCommandController extends AbstractCommandController
             '/─ ([\w.:-]+)/', // other properties
             '/".+"/', // string values
             '/\(\?\)$/', // unknown prototype question marks
+            '/ (true|false)$/', // boolean values
         ], [
             '<fg=red>$0</>',
             '<fg=magenta>\${$1}</>',
@@ -258,6 +259,7 @@ class FusionCommandController extends AbstractCommandController
             '─ <fg=blue>$1</>',
             '<fg=green>$0</>',
             '<fg=red;options=reverse>(?)</>',
+            ' <fg=green>$1</>',
         ], $tree);
     }
 }

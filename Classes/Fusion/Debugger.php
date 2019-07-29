@@ -42,6 +42,12 @@ class Debugger
     protected $parser;
 
     /**
+     * @Flow\InjectConfiguration
+     * @var array
+     */
+    protected $settings;
+
+    /**
      * @var array
      */
     protected $fusionTree = [];
@@ -187,9 +193,6 @@ class Debugger
 
         // Remove the prototype chain from the prototype definition as we just resolved it completely
         unset($definition[self::PROTOTYPE_CHAIN_KEY]);
-
-        //? Maybe sort the properties recursively for better readability?
-        // Arrays::sortKeysRecursively($definition, \SORT_NATURAL);
 
         return $definition;
     }
@@ -419,8 +422,11 @@ class Debugger
                 // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => null';
             } elseif ($value === false) {
-                // Special treatment for values that are explicitly 'null'
+                // Special treatment for values that are explicitly 'false'
                 $tree[] = $prefix . $key . ' => false';
+            } elseif ($value === true) {
+                // Special treatment for positive boolean values
+                $tree[] = $prefix . $key . ' => true';
             } elseif (empty($value)) {
                 // Render a placeholder to show that the key is explictly empty
                 $tree[] = $prefix . $key . ' => <empty>';
