@@ -269,7 +269,7 @@ class Debugger
             )) {
                 if (!empty($value[self::OBJECT_TYPE_KEY])) {
                     // We have a nested prototype without modification, so we just state that out
-                    $tmpValue = 'prototype(' . $value[self::OBJECT_TYPE_KEY] . ')';
+                    $tmpValue = '[' . $value[self::OBJECT_TYPE_KEY] . ']';
                     if (!$this->isPrototypeKnown($value[self::OBJECT_TYPE_KEY])) {
                         $tmpValue .= ' (?)';
                     }
@@ -393,34 +393,45 @@ class Debugger
 
             $type = gettype($value);
 
-            if ($type === 'array') { // Render the tree for the nested array and append it to the current
+            if ($type === 'array') {
+                // Render the tree for the nested array and append it to the current
                 $isFirst = true;
                 $nestedTree = $this->buildVisualFusionTree($value, $key);
 
                 foreach ($nestedTree as $nestedLine) {
-                    if ($isFirst === true) { // Don't indent the first line of the tree as we already have proper indentation
+                    if ($isFirst === true) {
+                        // Don't indent the first line of the tree as we already have proper indentation
                         $tree[] = $prefix . $nestedLine;
-                    } elseif ($isLast === true) { // Prepend the nested line with 4 spaces as there is no further parent-sibling
+                    } elseif ($isLast === true) {
+                        // Prepend the nested line with 4 spaces as there is no further parent-sibling
                         $tree[] = '    ' . $nestedLine;
-                    } else { // Prepend the nested line with a box-decorator and 3 spaces as there are more parent-siblings to render
+                    } else {
+                        // Prepend the nested line with a box-decorator and 3 spaces as there are more parent-siblings to render
                         $tree[] = '│   ' . $nestedLine;
                     }
 
                     $isFirst = false;
                 }
-            } elseif ($type === 'object') { // Render a static label with the classname of the object
+            } elseif ($type === 'object') {
+                // Render a static label with the classname of the object
                 $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
-            } elseif ($value === null) { // Special treatment for values that are explicitly 'null'
+            } elseif ($value === null) {
+                // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => null';
-            } elseif ($value === false) { // Special treatment for values that are explicitly 'null'
+            } elseif ($value === false) {
+                // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => false';
-            } elseif (empty($value)) { // Render a placeholder to show that the key is explictly empty
+            } elseif (empty($value)) {
+                // Render a placeholder to show that the key is explictly empty
                 $tree[] = $prefix . $key . ' => <empty>';
-            } elseif ($key === '__eelExpression' && substr($value, 0, 2) !== '${') { // Surround eel expressions with '${...}' to make them look like such
+            } elseif ($key === '__eelExpression' && substr($value, 0, 2) !== '${') {
+                // Surround eel expressions with '${...}' to make them look like such
                 $tree[] = $prefix . $key . ' => ${' . $value . '}';
-            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${') { // Sourround strings that are not object names with quotation marks
+            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${' && !preg_match('/\[[a-zA-Z0-9.:]+\]/', $value)) {
+                // Sourround strings that are not object names with quotation marks
                 $tree[] = $prefix . $key . ' => "' . $value . '"';
-            } else { // Render the static 'key => value' label for all other cases
+            } else {
+                // Render the static 'key => value' label for all other cases
                 $tree[] = $prefix . $key . ' => ' . $value;
             }
 

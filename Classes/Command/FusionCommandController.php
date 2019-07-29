@@ -244,7 +244,7 @@ class FusionCommandController extends AbstractCommandController
             '/@[\w.:-]+/', // meta properties
             '/\$\{(.+)\}/', // EEL expressions
             '/__objectType => (?!null)([a-zA-Z0-9.:]+)/', // Object types
-            '/(\w+) \[([a-zA-Z0-9.:]+)\]/', // Prototype names
+            '/([\w-]+(?> =>)?) \[([a-zA-Z0-9.:]+)\]/', // Prototype names
             '/─ (__[\w.:-]+)/', // internal properties
             '/─ ([\w.:-]+)/', // other properties
             '/".+"/', // string values
