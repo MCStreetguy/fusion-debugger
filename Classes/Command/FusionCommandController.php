@@ -12,6 +12,10 @@ use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
+use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
+use MCStreetguy\FusionDebugger\Exceptions\MissingPrototypeDefinitionException;
+use MCStreetguy\FusionDebugger\Exceptions\InvalidPrototypeDefinitionException;
+use MCStreetguy\FusionDebugger\Exceptions\FusionParseErrorException;
 
 /**
  * @Flow\Scope("singleton")
@@ -124,7 +128,13 @@ class FusionCommandController extends AbstractCommandController
             $this->quit(1);
         }
 
-        $objectTree = $this->debugger->getObjectTree($path);
+        try {
+            $objectTree = $this->debugger->getObjectTree($path);
+        } catch (MissingPrototypeDefinitionException|InvalidPrototypeDefinitionException|FusionParseErrorException|FusionFileException $e) {
+            $this->outputErrorMessage($e->getMessage());
+            $this->sendAndExit(round($e->getCode() % 255));
+        }
+
         $tree = $this->buildVisualFusionTree($objectTree, ($path ?: '.'));
 
         $this->output(implode(PHP_EOL, $tree));
@@ -153,7 +163,12 @@ class FusionCommandController extends AbstractCommandController
      */
     public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $notFlat = false)
     {
-        $definition = $this->debugger->loadPrototype($prototype);
+        try {
+            $definition = $this->debugger->loadPrototype($prototype);
+        } catch (MissingPrototypeDefinitionException|InvalidPrototypeDefinitionException|FusionParseErrorException|FusionFileException $e) {
+            $this->outputErrorMessage($e->getMessage());
+            $this->sendAndExit(round($e->getCode() % 255));
+        }
 
         if ($notFlat === false) {
             $definition = $this->debugger->flattenPrototypeDefinition($definition);
