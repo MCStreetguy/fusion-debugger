@@ -11,6 +11,7 @@ use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\Core\Parser;
 use Neos\Utility\Arrays;
+use Neos\Utility\PositionalArraySorter;
 
 /**
  * The main debugging component for Fusion.
@@ -350,6 +351,79 @@ class Debugger
         // Remove the prototype object name property as it's usage is primarily internal
         unset($results[self::PROTOTYPE_OBJECT_NAME_KEY]);
 
+        // Sort the data by their positional array property
+        $sortedResults = new PositionalArraySorter($results, '@position');
+        $results = $sortedResults->toArray();
+
+        // Move all meta keys to the beginning of the array
+        $containedMetaKeys = preg_grep('/^@/', array_keys($results));
+        natcasesort($containedMetaKeys);
+        foreach ($containedMetaKeys as $key) {
+            $results = [$key => $results[$key]] + $results;
+        }
+
         return $results;
+    }
+
+    /**
+     * Print a recursive fusion tree structure with box drawing characters to the terminal.
+     * Additionally this returns the tree as array of strings.
+     *
+     * @param array $data The associative data to display
+     * @param string $root The root key to display on top of the tree (defaults to '.')
+     * @return array
+     */
+    public function buildVisualFusionTree(array $data, string $root = '.')
+    {
+        $tree = [$root];
+        $cycle = 0;
+        $count = count($data);
+
+        foreach ($data as $key => $value) {
+            $prefix = '├── ';
+
+            // Change box-decorator prefix if element is the last child
+            if (($isLast = ($cycle === $count - 1)) === true) {
+                $prefix = '└── ';
+            }
+
+            $type = gettype($value);
+
+            if ($type === 'array') { // Render the tree for the nested array and append it to the current
+                $isFirst = true;
+                $nestedTree = $this->buildVisualFusionTree($value, $key);
+
+                foreach ($nestedTree as $nestedLine) {
+                    if ($isFirst === true) { // Don't indent the first line of the tree as we already have proper indentation
+                        $tree[] = $prefix . $nestedLine;
+                    } elseif ($isLast === true) { // Prepend the nested line with 4 spaces as there is no further parent-sibling
+                        $tree[] = '    ' . $nestedLine;
+                    } else { // Prepend the nested line with a box-decorator and 3 spaces as there are more parent-siblings to render
+                        $tree[] = '│   ' . $nestedLine;
+                    }
+
+                    $isFirst = false;
+                }
+            } elseif ($type === 'object') { // Render a static label with the classname of the object
+                $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
+            } elseif ($value === null) { // Special treatment for values that are explicitly 'null'
+                $tree[] = $prefix . $key . ' => null';
+            } elseif ($value === false) { // Special treatment for values that are explicitly 'null'
+                $tree[] = $prefix . $key . ' => false';
+            } elseif (empty($value)) { // Render a placeholder to show that the key is explictly empty
+                $tree[] = $prefix . $key . ' => <empty>';
+            } elseif ($key === '__eelExpression' && substr($value, 0, 2) !== '${') { // Surround eel expressions with '${...}' to make them look like such
+                $tree[] = $prefix . $key . ' => ${' . $value . '}';
+            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${') { // Sourround strings that are not object names with quotation marks
+                $tree[] = $prefix . $key . ' => "' . $value . '"';
+            } else { // Render the static 'key => value' label for all other cases
+                $tree[] = $prefix . $key . ' => ' . $value;
+            }
+
+            $cycle++;
+        }
+
+        // Return the tree as array of strings for internal further use
+        return $tree;
     }
 }

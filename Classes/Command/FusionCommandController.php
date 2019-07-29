@@ -132,7 +132,7 @@ class FusionCommandController extends AbstractCommandController
             $this->sendAndExit(round($e->getCode() % 255));
         }
 
-        $tree = $this->buildVisualFusionTree($objectTree, ($path ?: '.'));
+        $tree = $this->debugger->buildVisualFusionTree($objectTree, ($path ?: '.'));
 
         $this->output(implode(PHP_EOL, $tree));
         $this->newline();
@@ -176,7 +176,7 @@ class FusionCommandController extends AbstractCommandController
             $definition = $this->debugger->flattenPrototypeDefinition($definition);
         }
 
-        $tree = $this->buildVisualFusionTree($definition, $prototype);
+        $tree = $this->debugger->buildVisualFusionTree($definition, $prototype);
 
         if ($noColor === false) {
             $tree = $this->colorizeTree($tree);
@@ -229,69 +229,6 @@ class FusionCommandController extends AbstractCommandController
         } else {
             //TODO: We may not swallow remaining errors, output them too?
         }
-    }
-
-    /**
-     * Print a recursive fusion tree structure with box drawing characters to the terminal.
-     * Additionally this returns the tree as array of strings.
-     *
-     * @param array $data The associative data to display
-     * @param string $root The root key to display on top of the tree (defaults to '.')
-     * @param bool $suppressOutput Suppress any output (mainly used internally for recursive rendering)
-     * @return array
-     */
-    protected function buildVisualFusionTree(array $data, string $root = '.')
-    {
-        $tree = [$root];
-        $cycle = 0;
-        $count = count($data);
-
-        foreach ($data as $key => $value) {
-            $prefix = '├── ';
-
-            // Change box-decorator prefix if element is the last child
-            if (($isLast = ($cycle === $count - 1)) === true) {
-                $prefix = '└── ';
-            }
-
-            $type = gettype($value);
-
-            if ($type === 'array') { // Render the tree for the nested array and append it to the current
-                $isFirst = true;
-                $nestedTree = $this->buildVisualFusionTree($value, $key);
-
-                foreach ($nestedTree as $nestedLine) {
-                    if ($isFirst === true) { // Don't indent the first line of the tree as we already have proper indentation
-                        $tree[] = $prefix . $nestedLine;
-                    } elseif ($isLast === true) { // Prepend the nested line with 4 spaces as there is no further parent-sibling
-                        $tree[] = '    ' . $nestedLine;
-                    } else { // Prepend the nested line with a box-decorator and 3 spaces as there are more parent-siblings to render
-                        $tree[] = '│   ' . $nestedLine;
-                    }
-
-                    $isFirst = false;
-                }
-            } elseif ($type === 'object') { // Render a static label with the classname of the object
-                $tree[] = $prefix . $key . ' => object<' . get_class($value) . '>';
-            } elseif ($value === null) { // Special treatment for values that are explicitly 'null'
-                $tree[] = $prefix . $key . ' => null';
-            } elseif ($value === false) { // Special treatment for values that are explicitly 'null'
-                $tree[] = $prefix . $key . ' => false';
-            } elseif (empty($value)) { // Render a placeholder to show that the key is explictly empty
-                $tree[] = $prefix . $key . ' => <empty>';
-            } elseif ($key === '__eelExpression' && substr($value, 0, 2) !== '${') { // Surround eel expressions with '${...}' to make them look like such
-                $tree[] = $prefix . $key . ' => ${' . $value . '}';
-            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${') { // Sourround strings that are not object names with quotation marks
-                $tree[] = $prefix . $key . ' => "' . $value . '"';
-            } else { // Render the static 'key => value' label for all other cases
-                $tree[] = $prefix . $key . ' => ' . $value;
-            }
-
-            $cycle++;
-        }
-
-        // Return the tree as array of strings for internal further use
-        return $tree;
     }
 
     /**
