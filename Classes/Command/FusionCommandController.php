@@ -149,7 +149,8 @@ class FusionCommandController extends AbstractCommandController
      * as several parts of the built tree are colored (such as eel expressions, further prototype names
      * or just plain strings). Furthermore it flattens the resulting data by removing empty properties
      * and combining the internal properties for e.g. plain values (as these are stored with three properties
-     * but could be displayed directly without an array structure).
+     * but could be displayed directly without an array structure). The resulting tree is sorted recursively
+     * by the positional property '@position' if it is present, while meta keys get shifted to the beginning.
      * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
      * if it corrupts the resulting data or your terminal does not support ANSI colors.
      *
