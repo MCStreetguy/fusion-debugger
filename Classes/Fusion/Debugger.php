@@ -332,7 +332,9 @@ class Debugger
                     unset($value[self::META_INFO_KEY]);
                 }
             } elseif (!empty($value[self::VALUE_KEY])) {
-                // We have a simple value so we just strip the empty internal properties
+                // We have a simple value so we strip the internal properties and display it directly
+                $key = $key . ' => "' . $value[self::VALUE_KEY] . '"';
+                unset($value[self::VALUE_KEY]);
                 unset($value[self::EXPRESSION_KEY]);
                 unset($value[self::OBJECT_TYPE_KEY]);
             } elseif (!empty($value[self::EXPRESSION_KEY])) {
