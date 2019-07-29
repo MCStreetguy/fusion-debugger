@@ -12,10 +12,7 @@ use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
-use MCStreetguy\FusionDebugger\Exceptions\MissingPrototypeDefinitionException;
-use MCStreetguy\FusionDebugger\Exceptions\InvalidPrototypeDefinitionException;
-use MCStreetguy\FusionDebugger\Exceptions\FusionParseErrorException;
+use MCStreetguy\FusionDebugger\Exceptions\AbstractDebuggerException;
 
 /**
  * @Flow\Scope("singleton")
@@ -130,7 +127,7 @@ class FusionCommandController extends AbstractCommandController
 
         try {
             $objectTree = $this->debugger->getObjectTree($path);
-        } catch (MissingPrototypeDefinitionException|InvalidPrototypeDefinitionException|FusionParseErrorException|FusionFileException $e) {
+        } catch (AbstractDebuggerException $e) {
             $this->outputErrorMessage($e->getMessage());
             $this->sendAndExit(round($e->getCode() % 255));
         }
@@ -165,7 +162,7 @@ class FusionCommandController extends AbstractCommandController
     {
         try {
             $definition = $this->debugger->loadPrototype($prototype);
-        } catch (MissingPrototypeDefinitionException|InvalidPrototypeDefinitionException|FusionParseErrorException|FusionFileException $e) {
+        } catch (AbstractDebuggerException $e) {
             $this->outputErrorMessage($e->getMessage());
             $this->sendAndExit(round($e->getCode() % 255));
         }

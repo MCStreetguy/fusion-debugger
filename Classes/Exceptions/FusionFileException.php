@@ -5,12 +5,10 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
-use Neos\Flow\Exception;
-
 /**
  * A fusion file exception.
  */
-class FusionFileException extends Exception
+class FusionFileException extends AbstractDebuggerException
 {
     /**
      * Create an exception object for a missing or not readable fusion file.

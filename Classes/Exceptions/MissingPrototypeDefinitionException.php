@@ -5,12 +5,10 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
-use Neos\Flow\Exception;
-
 /**
  * An exception for a missing prototype definition.
  */
-class MissingPrototypeDefinitionException extends Exception
+class MissingPrototypeDefinitionException extends AbstractDebuggerException
 {
     public static function forPrototypeName(string $name)
     {
