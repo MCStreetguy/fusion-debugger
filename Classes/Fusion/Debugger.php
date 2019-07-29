@@ -192,7 +192,7 @@ class Debugger
         }
 
         // Remove the prototype chain from the prototype definition as we just resolved it completely
-        // unset($definition[self::PROTOTYPE_CHAIN_KEY]);
+        unset($definition[self::PROTOTYPE_CHAIN_KEY]);
 
         return $definition;
     }
