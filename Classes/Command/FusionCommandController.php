@@ -112,13 +112,29 @@ class FusionCommandController extends AbstractCommandController
      * Show the merged fusion object tree.
      *
      * Builds the object tree from all fusion files and displays it in a tree structure.
-     * Please not that this command does not reveal the __prototype key.
+     * Please note that this command does not reveal the __prototype key.
+     *
+     * For better readability, this command also includes something similar to syntax highlighting
+     * as several parts of the built tree are colored (such as eel expressions, further prototype names
+     * or just plain strings). Furthermore it flattens the resulting data by removing empty properties
+     * and combining the internal properties for e.g. plain values (as these are stored with three properties
+     * but could be displayed directly without an array structure). The resulting tree is sorted recursively
+     * by the positional property '@position' if it is present, while meta keys get shifted to the beginning.
+     * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
+     * if it corrupts the resulting data or your terminal does not support ANSI colors.
+     *
+     * If you encounter a '(?)' sign after a further prototype name, this means that the named prototype
+     * could not be found in the current prototype hierachie. These could probably cause rendering errors
+     * if there really is no such prototype defined, but it may be that it's just a recognition error.
+     * You should have a closer look on these properties and prototypes in either case!
      *
      * @param string $path A fusion path to filter the object tree by
+     * @param bool $noColor Suppress any colorized output
+     * @param bool $notFlat Don't flatten the prototype definition array
      * @return void
      * @see mcstreetguy.fusiondebugger:fusion:debugprototype
      */
-    public function showObjectTreeCommand(string $path = null)
+    public function showObjectTreeCommand(string $path = null, bool $noColor = false, bool $notFlat = false)
     {
         if ($path === '__prototypes') {
             $this->outputWarningMessage('Please use the fusion:showprototypehierachie command to debug Fusion prototypes!');
@@ -132,7 +148,20 @@ class FusionCommandController extends AbstractCommandController
             $this->sendAndExit(round($e->getCode() % 255));
         }
 
-        $tree = $this->debugger->buildVisualFusionTree($objectTree, ($path ?: '.'));
+        if ($notFlat === false) {
+            $objectTree = $this->debugger->flattenPrototypeDefinition($objectTree);
+        }
+
+        $treeRoot = $path ?: '.';
+        if ($noColor === false) {
+            $treeRoot = '<fg=yellow;options=bold>' . $treeRoot . '</>';
+        }
+
+        $tree = $this->debugger->buildVisualFusionTree($objectTree, $treeRoot);
+
+        if ($noColor === false) {
+            $tree = $this->colorizeTree($tree);
+        }
 
         $this->output(implode(PHP_EOL, $tree));
         $this->newline();
