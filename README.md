@@ -63,7 +63,7 @@ Please make sure that your `minimum-stability` is at least set to `alpha` as thi
 Alternatively you could require the package with an explicit version constraint, but please note that this only works for root-level manifests:
 
 ``` bash
-composer require mcstreetguy/fusion-debugger:0.2-alpha
+composer require mcstreetguy/fusion-debugger:0.4-alpha
 ```
 
 ## Usage
