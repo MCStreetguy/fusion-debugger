@@ -21,7 +21,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
     - [Configuration](#configuration)
       - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
       - [`namespaceMap`](#namespacemap)
-        - [Example](#example)
+        - [Namespace Map Example](#namespace-map-example)
   - [Versioning](#versioning)
   - [Authors](#authors)
   - [License](#license)
@@ -61,10 +61,10 @@ composer require mcstreetguy/fusion-debugger
 > Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability
 
 Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
-Alternatively you could require the package with an explicit version constraint, but please note that this only works for root-level manifests:
+Alternatively you could require the package with an explicit version requirement, but please note that this will only work for root-level manifests:
 
 ``` bash
-composer require mcstreetguy/fusion-debugger:0.4-alpha
+composer require mcstreetguy/fusion-debugger:@alpha
 ```
 
 ## Usage
@@ -75,10 +75,8 @@ _to be written_
 
 ### Commands
 
-The plugin provides several commands to the Flow CLI.
-Each command has a detailled help text available to guide you through it's usage.
-These are listed below for reference.
-Please see the respective help pages for more information.
+The plugin provides several commands to the Flow CLI. These are listed below for reference.
+Please see the respective help pages for more detailled information.
 
 #### `fusion:debugprototype`
   
@@ -94,6 +92,7 @@ If you have namespace mappings defined in `MCStreetguy.FusionDebugger.namespaceM
 > `mcstreetguy.fusiondebugger:fusion:showobjecttree [--path <path>]`
 
 Builds the object tree from all Fusion files and displays it in an ASCII tree structure (excluding the `__prototypes` key as we got the above command for that).
+You can optionally provide a dot-separated path that will be loaded instead of the whole tree. (e.g. `./flow fusion:showobjecttree --path root.page`)
 
 #### `fusion:lint`
 
@@ -124,7 +123,7 @@ An associative array of fusion namespace shorthands to full namespaces mappings.
 By default, no namespace is set as this varies widely and depends on the current use case.
 If you define namespace mappings here, these will be taken into account for the [`fusion:debugprototype`](#fusiondebugprototype) command.
 
-##### Example
+##### Namespace Map Example
 
 ```yaml
 MCStreetguy:
