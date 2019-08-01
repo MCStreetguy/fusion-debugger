@@ -5,6 +5,7 @@ namespace MCStreetguy\FusionDebugger\Command;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
+use MCStreetguy\FusionDebugger\Exceptions\AbstractDebuggerException;
 use MCStreetguy\FusionDebugger\Fusion\Debugger;
 use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
@@ -12,7 +13,6 @@ use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
-use MCStreetguy\FusionDebugger\Exceptions\AbstractDebuggerException;
 
 /**
  * @Flow\Scope("singleton")
@@ -137,7 +137,7 @@ class FusionCommandController extends AbstractCommandController
     public function showObjectTreeCommand(string $path = null, bool $noColor = false, bool $notFlat = false)
     {
         if ($path === '__prototypes') {
-            $this->outputWarningMessage('Please use the fusion:showprototypehierachie command to debug Fusion prototypes!');
+            $this->outputWarningMessage('Please use the fusion:debugprototype command to debug Fusion prototypes!');
             $this->quit(1);
         }
 
@@ -195,6 +195,8 @@ class FusionCommandController extends AbstractCommandController
      */
     public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $notFlat = false)
     {
+        $prototype = $this->expandPrototypeName($prototype);
+
         try {
             $definition = $this->debugger->loadPrototype($prototype);
         } catch (AbstractDebuggerException $e) {
@@ -222,6 +224,24 @@ class FusionCommandController extends AbstractCommandController
     }
 
     // Service methods
+
+    /**
+     * Expand the given prototype name by replacing any namespace shorthand.
+     *
+     * @param string $name The prototype name
+     * @return string
+     */
+    protected function expandPrototypeName(string $name)
+    {
+        list($vendorPrefix, $prototypeName) = explode(':', $name, 2);
+
+        if (array_key_exists($vendorPrefix, $this->settings['namespaceMap'])) {
+            $vendorPrefix = $this->settings['namespaceMap'][$vendorPrefix];
+            $this->outputInfoMessage("Note: Prototype name expanded from '$name' to '$vendorPrefix:$prototypeName'!");
+        }
+
+        return $vendorPrefix . ':' . $prototypeName;
+    }
 
     /**
      * Output a short version of the given exception message.
@@ -262,7 +282,7 @@ class FusionCommandController extends AbstractCommandController
         ])) { // no special treatment
             $this->outputErrorMessage($e->getMessage());
         } else {
-            //TODO: We may not swallow remaining errors, output them too?
+            $this->outputErrorMessage('[UNKNOWN] ' . $e->getMessage());
         }
     }
 
