@@ -14,7 +14,6 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Overview](#overview)
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
-  - [Usage](#usage)
   - [Reference](#reference)
     - [Commands](#commands)
       - [`fusion:debugprototype`](#fusiondebugprototype)
@@ -38,15 +37,12 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
 
 **Why do I need it?**
 
-Short answer: You don't necessarily.
-
-**But then why should I want to have it?**
-
 Did you ever came across some really strange rending issue while you created a page in Neos?
-And did you ever told yourself: "Why the actual fuck is this happening? It's supposed to do something different."  
+And did you ever told yourself: "Why the actual hell is this happening? It's supposed to do something different."  
 Well then you probably know about the reasons behind this plugin, it's _improved debugging_.
 
-It's currently not possible in common Neos installations to have a closer look behind the scenes of Fusion rendering. It parses some code, does some magic and then hopefully your expected result will appear.
+It's currently not possible in common Neos installations to have a closer look behind the scenes of Fusion rendering.
+It parses some code, does some magic and then hopefully your expected result will appear.
 But what happens actually in between?  
 To get rid of that uncertainty this Plugin allows you to visualize what you normally won't see: the merged Fusion prototype configuration and the combined object tree.
 
@@ -55,7 +51,7 @@ To get rid of that uncertainty this Plugin allows you to visualize what you norm
 Install the plugin by requiring it through composer:
 
 ``` bash
-composer require mcstreetguy/fusion-debugger
+composer require --dev mcstreetguy/fusion-debugger
 ```
 
 ### Troubleshooting
@@ -66,12 +62,8 @@ Please make sure that your `minimum-stability` is at least set to `alpha` as thi
 Alternatively you could require the package with an explicit version requirement, but please note that this will only work for root-level manifests:
 
 ``` bash
-composer require mcstreetguy/fusion-debugger:@alpha
+composer require --dev mcstreetguy/fusion-debugger:@alpha
 ```
-
-## Usage
-
-_to be written_
 
 ## Reference
 
