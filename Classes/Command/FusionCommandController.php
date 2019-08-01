@@ -75,7 +75,7 @@ class FusionCommandController extends AbstractCommandController
     {
         $filesToLint = $this->files->load($packageKey);
         $totalCount = count($filesToLint);
-        $errors = 0;
+        $errors = [];
 
         if (!$quiet && !$verbose) {
             $this->output->progressStart($totalCount);
@@ -91,9 +91,9 @@ class FusionCommandController extends AbstractCommandController
                 $containingPackageKey = $file->getPackageKey();
                 $relativeFilePath = preg_replace(self::RELATIVE_PATH_SUBTRACTOR_PATTERN, '', $file->getFullPath());
 
-                !$quiet && $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
+                $errors[] = "Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}";
 
-                $errors++;
+                !$quiet && $this->output->progressAdvance();
                 continue;
             }
 
@@ -104,17 +104,25 @@ class FusionCommandController extends AbstractCommandController
             }
         }
 
+        $errorCount = count($errors);
+
         if (!$quiet) {
             if (!$verbose) {
                 $this->output->progressFinish();
             }
 
             $this->newline();
+
+            foreach ($errors as $errorMessage) {
+                $this->outputErrorMessage($errorMessage);
+            }
+
+            $this->newline();
         }
 
-        if ($errors > 0) {
+        if ($errorCount > 0) {
             if (!$quiet) {
-                $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
+                $this->outputWarningMessage("Processed $totalCount files and encountered $errorCount errors!");
                 $this->outputWarningMessage('There may be additional output containing more information above.');
             }
 
