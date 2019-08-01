@@ -31,9 +31,9 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
 
 **What is this plugin capable of?**
 
-- Linting fusion files for syntax errors
-- Debugging fully merged prototype definitions
-- Visualizing (parts of) the combined object tree
+- Debugging fully merged Fusion prototype definitions
+- Visualizing (parts of) the combined Fusion object tree
+- Linting Fusion files for syntax errors
 
 **Why do I need it?**
 
