@@ -90,7 +90,7 @@ You can optionally provide a dot-separated path that will be loaded instead of t
 
 #### `fusion:lint`
 
-> `mcstreetguy.fusiondebugger:fusion:lint [--package-key <packageKey>] [--verbose]`
+> `mcstreetguy.fusiondebugger:fusion:lint [--package-key <packageKey>] [--verbose] [--quiet]`
 
 Checks all Fusion files individually for syntax errors and lists the incorrect files with their associated package and file path.
 This command was intended to programmatically check the correctness of the Fusion source code and is in fact still an experiment but listed for the sake of completeness.

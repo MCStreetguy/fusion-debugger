@@ -64,16 +64,22 @@ class FusionCommandController extends AbstractCommandController
      *
      * Checks all Fusion files individually for syntax errors and lists the
      * incorrect files with their associated package, file path and contained error.
+     * The command exits with code '0' if no error has been found, '1' otherwise.
      *
      * @param string $packageKey The package to load the Fusion code from. If not given, all packages are linted.
      * @param bool $verbose Produce more detailled output with additional information.
+     * @param bool $quiet Don't produce any output. Overrules the --verbose flag.
      * @return void
      */
-    public function lintCommand(string $packageKey = null, bool $verbose = false)
+    public function lintCommand(string $packageKey = null, bool $verbose = false, bool $quiet = false)
     {
         $filesToLint = $this->files->load($packageKey);
         $totalCount = count($filesToLint);
         $errors = 0;
+
+        if (!$quiet && !$verbose) {
+            $this->output->progressStart($totalCount);
+        }
 
         foreach ($filesToLint as $file) {
             try {
@@ -85,26 +91,38 @@ class FusionCommandController extends AbstractCommandController
                 $containingPackageKey = $file->getPackageKey();
                 $relativeFilePath = preg_replace(self::RELATIVE_PATH_SUBTRACTOR_PATTERN, '', $file->getFullPath());
 
-                $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
+                !$quiet && $this->outputErrorMessage("Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}");
 
                 $errors++;
                 continue;
             }
 
-            if ($verbose === true) {
+            if ($verbose && !$quiet) {
                 $this->outputSuccessMessage("File {$file->getRelativePath()} contains no errors.");
+            } elseif (!$quiet) {
+                $this->output->progressAdvance();
             }
         }
 
-        $this->newline();
+        if (!$quiet) {
+            if (!$verbose) {
+                $this->output->progressFinish();
+            }
 
-        if ($errors > 0) {
-            $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
-            $this->outputWarningMessage('There may be additional output containing more information above.');
-            $this->quit(1);
+            $this->newline();
         }
 
-        $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
+        if ($errors > 0) {
+            if (!$quiet) {
+                $this->outputWarningMessage("Processed $totalCount files and encountered $errors errors!");
+                $this->outputWarningMessage('There may be additional output containing more information above.');
+            }
+
+            $this->quit(1);
+        } elseif (!$quiet) {
+            $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
+        }
+
         $this->quit(0);
     }
 
