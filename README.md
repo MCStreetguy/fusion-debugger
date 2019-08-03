@@ -59,7 +59,7 @@ composer require --dev mcstreetguy/fusion-debugger
 > Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability
 
 Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
-Alternatively you could require the package with an explicit version requirement, but please note that this will only work for root-level manifests:
+Alternatively you could require the package with an explicit alpha-version constraint, but please note that this will only work for root-level manifests:
 
 ``` bash
 composer require --dev mcstreetguy/fusion-debugger:@alpha
