@@ -8,7 +8,9 @@
 | ------- | --------- |
 | 0.1-alpha | :x: |
 | 0.2-alpha | :x: |
-| 0.3-alpha | :white_check_mark: |
+| 0.3-alpha | :x: |
+| 0.4-alpha | :x: |
+| 0.5-alpha | :white_check_mark: |
 | dev-master | :white_check_mark: |
 
 ## Reporting a Vulnerability
