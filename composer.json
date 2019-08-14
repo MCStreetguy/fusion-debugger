@@ -18,7 +18,6 @@
         "email": "maximilianschmidt404@gmail.com"
     },
     "require": {
-        "php": ">=7.1",
         "neos/flow": "^4.3.0",
         "neos/fusion": ">=3.3.0"
     },
