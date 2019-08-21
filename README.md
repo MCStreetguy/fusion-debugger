@@ -2,8 +2,6 @@
 
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
--------
-
 **PLEASE NOTE! This plugin is currently work in progress and alls of it's parts are subject to change probably! You should not rely on this in a production environment yet as it is not proven to be stable!**
 
 -------
@@ -19,6 +17,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
       - [`fusion:debugprototype`](#fusiondebugprototype)
       - [`fusion:showobjecttree`](#fusionshowobjecttree)
       - [`fusion:lint`](#fusionlint)
+      - [`fusion:listprototypes`](#fusionlistprototypes)
     - [Configuration](#configuration)
       - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
       - [`namespaceMap`](#namespacemap)
@@ -94,6 +93,13 @@ You can optionally provide a dot-separated path that will be loaded instead of t
 
 Checks all Fusion files individually for syntax errors and lists the incorrect files with their associated package and file path.
 This command was intended to programmatically check the correctness of the Fusion source code and is in fact still an experiment but listed for the sake of completeness.
+
+#### `fusion:listprototypes`
+
+> `mcstreetguy.fusiondebugger:fusion:listprototypes [--no-format]`
+
+Lists all known Fusion prototype names.  
+If the `--no-format` option is specified, the list will lack any bullets and return unsorted.
 
 ### Configuration
 

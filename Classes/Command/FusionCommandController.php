@@ -251,6 +251,29 @@ class FusionCommandController extends AbstractCommandController
         $this->newline();
     }
 
+    /**
+     * List all known prototypes by their names.
+     *
+     * List all known prototypes by their names.
+     *
+     * @return void
+     */
+    public function listPrototypesCommand(bool $noFormat = false)
+    {
+        $prototypeNames = \array_keys($this->debugger->loadAllDefinitions(true));
+
+        if ($noFormat === false) {
+            \natsort($prototypeNames);
+
+            $this->outputUnorderedList($prototypeNames);
+            $this->quit(0);
+        }
+
+        foreach ($prototypeNames as $name) {
+            $this->outputLine($name);
+        }
+    }
+
     // Service methods
 
     /**

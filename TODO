@@ -1,6 +1,6 @@
 - [x] Add color highlighting for tree views
 - [x] Filter empty values by default
 - [x] Sort all keys by their @position property
-- [ ] Add a backend module with a collapsible tree structure
 - [x] Add a progress bar to the lint command in non-verbose mode
-- [ ] Add handling for nested prototype definitions (or at least style them in some proper way)
+- [ ] Add a backend module with a collapsible tree structure
+- [ ] Add handling for nested prototype definitions (or at least style them in some proper way)
