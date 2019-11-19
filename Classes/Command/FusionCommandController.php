@@ -20,7 +20,11 @@ use Neos\Fusion\Core\Runtime;
 class FusionCommandController extends AbstractCommandController
 {
     const PROTOTYPES_KEY_NAME = '__prototypes';
+
     const RELATIVE_PATH_SUBTRACTOR_PATTERN = '/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i';
+    const FUSION_INCLUDE_STATEMENT_PATTERN = '/^include:/im';
+
+    const FUSION_INCLUDE_STATEMENT_REPLACEMENT = '#include:';
 
     /**
      * @Flow\InjectConfiguration
@@ -83,8 +87,21 @@ class FusionCommandController extends AbstractCommandController
 
         foreach ($filesToLint as $file) {
             try {
+                $fileContents = $file->getContents();
+
+                /**
+                 * Normalized file contents without any 'include:' statement to prevent doubled error messages.
+                 * @see https://github.com/MCStreetguy/fusion-debugger/issues/4
+                 * @var string
+                 */
+                $normalizedFileContents = preg_replace(
+                    self::FUSION_INCLUDE_STATEMENT_PATTERN,
+                    self::FUSION_INCLUDE_STATEMENT_REPLACEMENT,
+                    $fileContents
+                );
+
                 $this->fusionParser->parse(
-                    $file->getContents(),
+                    $normalizedFileContents,
                     $file->getFullPath()
                 );
             } catch (Exception $e) {
