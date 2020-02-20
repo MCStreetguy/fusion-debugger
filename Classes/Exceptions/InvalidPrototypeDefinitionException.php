@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Exceptions;
 
 /*
@@ -10,8 +11,9 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  */
 class InvalidPrototypeDefinitionException extends AbstractDebuggerException
 {
-    public static function forPrototypeName(string $name)
+    public static function forPrototypeName($name)
     {
-        return new self("The prototype definition for $name is invalid!", 1564131470406);
+        Assert::string($name);
+        return new self("The prototype definition for {$name} is invalid!", 1564131470406);
     }
 }

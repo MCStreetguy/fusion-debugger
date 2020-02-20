@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Utility;
 
 /*
@@ -7,6 +8,7 @@ namespace MCStreetguy\FusionDebugger\Utility;
 
 use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
 use Neos\Flow\Annotations as Flow;
+use Webmozart\Assert\Assert;
 
 /**
  * An immutable fusion file representation, containing metadata and tunneling access to file contents.
@@ -71,8 +73,11 @@ class FusionFile
      * @param string $filePathAndName The full path to the corresponding fusion file.
      * @throws FusionFileException If $filePathAndName does not exist or is not readable.
      */
-    public function __construct(string $packageKey, string $filePathAndName)
+    public function __construct($packageKey, $filePathAndName)
     {
+        Assert::string($packageKey);
+        Assert::string($filePathAndName);
+
         if (!file_exists($filePathAndName) || !is_readable($filePathAndName)) {
             throw FusionFileException::forMissingOrNotReadable($filePathAndName);
         }

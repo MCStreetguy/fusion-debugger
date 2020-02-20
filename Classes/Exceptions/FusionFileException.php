@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Exceptions;
 
 /*
@@ -14,8 +15,9 @@ class FusionFileException extends AbstractDebuggerException
      * Create an exception object for a missing or not readable fusion file.
      * @return self
      */
-    public static function forMissingOrNotReadable(string $filePathAndName)
+    public static function forMissingOrNotReadable($filePathAndName)
     {
-        return new self("Fusion file $filePathAndName does not exist or is not readable!", 1564159029025);
+        Assert::string($filePathAndName);
+        return new self("Fusion file {$filePathAndName} does not exist or is not readable!", 1564159029025);
     }
 }

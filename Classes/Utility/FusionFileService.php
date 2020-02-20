@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Utility;
 
 /*
@@ -39,8 +40,10 @@ class FusionFileService
      * @param string $fromPackageKey If given, valid and not frozen, only fusion files from that package are returned.
      * @return FusionFile[]
      */
-    public function load(string $fromPackageKey = null)
+    public function load($fromPackageKey = null)
     {
+        Assert::string($fromPackageKey);
+
         $staticCacheKey = '*';
         $foundFusionFiles = [];
 
@@ -50,12 +53,7 @@ class FusionFileService
             return $this->files[$staticCacheKey];
         }
 
-        if ((
-            $fromPackageKey !== null &&
-            $this->packageManager->isPackageKeyValid($fromPackageKey) &&
-            $this->packageManager->isPackageAvailable($fromPackageKey) &&
-            !$this->packageManager->isPackageFrozen($fromPackageKey)
-        )) {
+        if ($fromPackageKey !== null && $this->packageManager->isPackageKeyValid($fromPackageKey) && $this->packageManager->isPackageAvailable($fromPackageKey) && !$this->packageManager->isPackageFrozen($fromPackageKey)) {
             $sourcePackages = [$this->packageManager->getPackage($fromPackageKey)];
             $staticCacheKey = $fromPackageKey;
         } else {
@@ -83,7 +81,6 @@ class FusionFileService
         }
 
         $this->files[$staticCacheKey] = $foundFusionFiles;
-
         return $foundFusionFiles;
     }
 }

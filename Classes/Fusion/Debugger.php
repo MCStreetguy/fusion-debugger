@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Fusion;
 
 /*
@@ -12,6 +13,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Fusion\Core\Parser;
 use Neos\Utility\Arrays;
 use Neos\Utility\PositionalArraySorter;
+use Webmozart\Assert\Assert;
 
 /**
  * The main debugging component for Fusion.
@@ -58,8 +60,9 @@ class Debugger
      * @param string $name The prototype name to check
      * @return bool 'true' if the prototype could be found, 'false' otherwise
      */
-    public function isPrototypeKnown(string $name)
+    public function isPrototypeKnown($name)
     {
+        Assert::string($name);
         return array_key_exists($name, $this->loadFusionTree()[self::PROTOTYPES_KEY]);
     }
 
@@ -70,8 +73,11 @@ class Debugger
      * @param bool $returnBare Return the plain definition and don't merge anything
      * @return array The requested prototype definition
      */
-    public function loadPrototype(string $name, bool $returnBare = false)
+    public function loadPrototype($name, $returnBare = false)
     {
+        Assert::string($name);
+        Assert::boolean($returnBare);
+
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
 
         if (!array_key_exists($name, $prototypes)) {
@@ -89,8 +95,10 @@ class Debugger
      * @param bool $returnBare Return the plain definitions and don't merge anything
      * @return array All available prototype definitions
      */
-    public function loadAllDefinitions(bool $returnBare = false)
+    public function loadAllDefinitions($returnBare = false)
     {
+        Assert::boolean($returnBare);
+
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
 
         if ($returnBare === false) {
@@ -108,8 +116,10 @@ class Debugger
      * @param string $path A path to retrieve from the object tree (in form of "foo.bar.baz")
      * @return array|mixed The loaded object tree or the value found at the given path
      */
-    public function getObjectTree(string $path = null)
+    public function getObjectTree($path = null)
     {
+        Assert::string($path);
+
         $objectTree = $this->loadFusionTree();
 
         // Remove the prototypes key as we have seperate methods for that
@@ -139,11 +149,7 @@ class Debugger
 
         foreach ($this->files->load() as $file) {
             try {
-                $this->fusionTree = $this->parser->parse(
-                    $file->getContents(),
-                    $file->getFullPath(),
-                    $this->fusionTree
-                );
+                $this->fusionTree = $this->parser->parse($file->getContents(), $file->getFullPath(), $this->fusionTree);
             } catch (\Throwable $e) {
                 throw FusionParseErrorException::forFile($file->getFullPath(), $e);
             }
@@ -159,8 +165,10 @@ class Debugger
      * @param array $bareDefinition The plain prototype definition of the prototype
      * @return array The resolved definition
      */
-    protected function mergePrototypeChain(string $basePrototype, array $bareDefinition)
+    protected function mergePrototypeChain($basePrototype, array $bareDefinition)
     {
+        Assert::string($basePrototype);
+
         if (empty($bareDefinition) || !array_key_exists(self::PROTOTYPE_CHAIN_KEY, $bareDefinition)) {
             return $bareDefinition;
         }
@@ -172,6 +180,7 @@ class Debugger
 
         // If the base prototype is also the root prototype we already have its definition
         $definition = $bareDefinition;
+
         if ($rootPrototype !== $basePrototype) {
             $definition = $this->loadPrototype($rootPrototype);
         }
@@ -264,15 +273,11 @@ class Debugger
             }
 
             // If we have a simple type structure and no further properties we can convert that directly
-            if ((
-                count($value) === 3 &&
-                array_key_exists(self::OBJECT_TYPE_KEY, $value) &&
-                array_key_exists(self::EXPRESSION_KEY, $value) &&
-                array_key_exists(self::VALUE_KEY, $value)
-            )) {
+            if (count($value) === 3 && array_key_exists(self::OBJECT_TYPE_KEY, $value) && array_key_exists(self::EXPRESSION_KEY, $value) && array_key_exists(self::VALUE_KEY, $value)) {
                 if (!empty($value[self::OBJECT_TYPE_KEY])) {
                     // We have a nested prototype without modification, so we just state that out
                     $tmpValue = '[' . $value[self::OBJECT_TYPE_KEY] . ']';
+
                     if (!$this->isPrototypeKnown($value[self::OBJECT_TYPE_KEY])) {
                         $tmpValue .= ' (?)';
                     }
@@ -327,7 +332,6 @@ class Debugger
                             // If the nested value is an array it has to be flattened too
                             $subvalue = $this->flattenPrototypeDefinition($subvalue);
                         }
-
                         $value['@' . $subkey] = $subvalue;
                     }
 
@@ -363,7 +367,7 @@ class Debugger
         // Move all meta keys to the beginning of the array
         $containedMetaKeys = preg_grep('/^@/', array_keys($results));
         if (count($containedMetaKeys) > 0) {
-            sort($containedMetaKeys, (SORT_FLAG_CASE));
+            sort($containedMetaKeys, SORT_FLAG_CASE);
             foreach (array_reverse($containedMetaKeys, true) as $key) {
                 $results = [$key => $results[$key]] + $results;
             }
@@ -380,8 +384,10 @@ class Debugger
      * @param string $root The root key to display on top of the tree (defaults to '.')
      * @return array
      */
-    public function buildVisualFusionTree(array $data, string $root = '.')
+    public function buildVisualFusionTree(array $data, $root = '.')
     {
+        Assert::string($root);
+
         $tree = [$root];
         $cycle = 0;
         $count = count($data);
@@ -390,12 +396,11 @@ class Debugger
             $prefix = '├── ';
 
             // Change box-decorator prefix if element is the last child
-            if (($isLast = ($cycle === $count - 1)) === true) {
+            if (($isLast = $cycle === $count - 1) === true) {
                 $prefix = '└── ';
             }
 
             $type = gettype($value);
-
             if ($type === 'array') {
                 // Render the tree for the nested array and append it to the current
                 $isFirst = true;
@@ -433,7 +438,7 @@ class Debugger
             } elseif ($key === '__eelExpression' && substr($value, 0, 2) !== '${') {
                 // Surround eel expressions with '${...}' to make them look like such
                 $tree[] = $prefix . $key . ' => ${' . $value . '}';
-            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${' && !preg_match('/\[[a-zA-Z0-9.:]+\]/', $value)) {
+            } elseif ($type === 'string' && $key !== '__objectType' && substr($value, 0, 2) !== '${' && !preg_match('/\\[[a-zA-Z0-9.:]+\\]/', $value)) {
                 // Sourround strings that are not object names with quotation marks
                 $tree[] = $prefix . $key . ' => "' . $value . '"';
             } else {

@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Command;
 
 /*
@@ -13,6 +14,7 @@ use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
+use Webmozart\Assert\Assert;
 
 /**
  * @Flow\Scope("singleton")
@@ -20,10 +22,8 @@ use Neos\Fusion\Core\Runtime;
 class FusionCommandController extends AbstractCommandController
 {
     const PROTOTYPES_KEY_NAME = '__prototypes';
-
-    const RELATIVE_PATH_SUBTRACTOR_PATTERN = '/resource:\/\/[a-z0-9]+\.(?:[a-z0-9][\.a-z0-9]*)+\//i';
+    const RELATIVE_PATH_SUBTRACTOR_PATTERN = '/resource:\\/\\/[a-z0-9]+\\.(?:[a-z0-9][\\.a-z0-9]*)+\\//i';
     const FUSION_INCLUDE_STATEMENT_PATTERN = '/^include:/im';
-
     const FUSION_INCLUDE_STATEMENT_REPLACEMENT = '#include:';
 
     /**
@@ -75,8 +75,12 @@ class FusionCommandController extends AbstractCommandController
      * @param bool $quiet Don't produce any output. Overrules the --verbose flag.
      * @return void
      */
-    public function lintCommand(string $packageKey = null, bool $verbose = false, bool $quiet = false)
+    public function lintCommand($packageKey = null, $verbose = false, $quiet = false)
     {
+        Assert::string($packageKey);
+        Assert::boolean($verbose);
+        Assert::boolean($quiet);
+
         $filesToLint = $this->files->load($packageKey);
         $totalCount = count($filesToLint);
         $errors = [];
@@ -94,22 +98,13 @@ class FusionCommandController extends AbstractCommandController
                  * @see https://github.com/MCStreetguy/fusion-debugger/issues/4
                  * @var string
                  */
-                $normalizedFileContents = preg_replace(
-                    self::FUSION_INCLUDE_STATEMENT_PATTERN,
-                    self::FUSION_INCLUDE_STATEMENT_REPLACEMENT,
-                    $fileContents
-                );
+                $normalizedFileContents = preg_replace(self::FUSION_INCLUDE_STATEMENT_PATTERN, self::FUSION_INCLUDE_STATEMENT_REPLACEMENT, $fileContents);
 
-                $this->fusionParser->parse(
-                    $normalizedFileContents,
-                    $file->getFullPath()
-                );
+                $this->fusionParser->parse($normalizedFileContents, $file->getFullPath());
             } catch (Exception $e) {
                 $containingPackageKey = $file->getPackageKey();
                 $relativeFilePath = preg_replace(self::RELATIVE_PATH_SUBTRACTOR_PATTERN, '', $file->getFullPath());
-
-                $errors[] = "Error in $containingPackageKey -> '$relativeFilePath': {$e->getMessage()}";
-
+                $errors[] = "Error in {$containingPackageKey} -> '{$relativeFilePath}': {$e->getMessage()}";
                 !$quiet && $this->output->progressAdvance();
                 continue;
             }
@@ -139,13 +134,13 @@ class FusionCommandController extends AbstractCommandController
 
         if ($errorCount > 0) {
             if (!$quiet) {
-                $this->outputWarningMessage("Processed $totalCount files and encountered $errorCount errors!");
+                $this->outputWarningMessage("Processed {$totalCount} files and encountered {$errorCount} errors!");
                 $this->outputWarningMessage('There may be additional output containing more information above.');
             }
 
             $this->quit(1);
         } elseif (!$quiet) {
-            $this->outputSuccessMessage("Processed $totalCount files and found no syntax errors.");
+            $this->outputSuccessMessage("Processed {$totalCount} files and found no syntax errors.");
         }
 
         $this->quit(0);
@@ -177,8 +172,12 @@ class FusionCommandController extends AbstractCommandController
      * @return void
      * @see mcstreetguy.fusiondebugger:fusion:debugprototype
      */
-    public function showObjectTreeCommand(string $path = null, bool $noColor = false, bool $notFlat = false)
+    public function showObjectTreeCommand($path = null, $noColor = false, $notFlat = false)
     {
+        Assert::string($path);
+        Assert::boolean($noColor);
+        Assert::boolean($notFlat);
+
         if ($path === '__prototypes') {
             $this->outputWarningMessage('Please use the fusion:debugprototype command to debug Fusion prototypes!');
             $this->quit(1);
@@ -196,6 +195,7 @@ class FusionCommandController extends AbstractCommandController
         }
 
         $treeRoot = $path ?: '.';
+
         if ($noColor === false) {
             $treeRoot = '<fg=yellow;options=bold>' . $treeRoot . '</>';
         }
@@ -238,8 +238,12 @@ class FusionCommandController extends AbstractCommandController
      * @param bool $notFlat Don't flatten the prototype definition array
      * @return void
      */
-    public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $notFlat = false)
+    public function debugPrototypeCommand($prototype, $noColor = false, $notFlat = false)
     {
+        Assert::string($prototype);
+        Assert::boolean($noColor);
+        Assert::boolean($notFlat);
+
         $prototype = $this->expandPrototypeName($prototype);
 
         try {
@@ -254,6 +258,7 @@ class FusionCommandController extends AbstractCommandController
         }
 
         $treeRoot = $prototype;
+
         if ($noColor === false) {
             $treeRoot = '<fg=yellow;options=bold>' . $treeRoot . '</>';
         }
@@ -275,13 +280,14 @@ class FusionCommandController extends AbstractCommandController
      *
      * @return void
      */
-    public function listPrototypesCommand(bool $noFormat = false)
+    public function listPrototypesCommand($noFormat = false)
     {
+        Assert::boolean($noFormat);
+
         $prototypeNames = \array_keys($this->debugger->loadAllDefinitions(true));
 
         if ($noFormat === false) {
             \natsort($prototypeNames);
-
             $this->outputUnorderedList($prototypeNames);
             $this->quit(0);
         }
@@ -299,13 +305,15 @@ class FusionCommandController extends AbstractCommandController
      * @param string $name The prototype name
      * @return string
      */
-    protected function expandPrototypeName(string $name)
+    protected function expandPrototypeName($name)
     {
+        Assert::string($name);
+
         list($vendorPrefix, $prototypeName) = explode(':', $name, 2);
 
         if (array_key_exists($vendorPrefix, $this->settings['namespaceMap'])) {
             $vendorPrefix = $this->settings['namespaceMap'][$vendorPrefix];
-            $this->outputInfoMessage("Note: Prototype name expanded from '$name' to '$vendorPrefix:$prototypeName'!");
+            $this->outputInfoMessage("Note: Prototype name expanded from '{$name}' to '{$vendorPrefix}:{$prototypeName}'!");
         }
 
         return $vendorPrefix . ':' . $prototypeName;
@@ -326,8 +334,7 @@ class FusionCommandController extends AbstractCommandController
             $this->outputErrorMessage('Invalid namespace declaration given!');
         } elseif ($e->getCode() === 1180547966) {
             /** @see https://github.com/neos/neos-development-collection/blob/master/Neos.Fusion/Classes/Core/Parser.php#L384 */
-
-            preg_match('/Syntax error in line (\d+). \((.+)\)/i', $e->getMessage(), $matches);
+            preg_match('/Syntax error in line (\\d+). \\((.+)\\)/i', $e->getMessage(), $matches);
             $this->outputErrorMessage('Syntax error on line ' . $matches[1] . ': ' . $matches[2] . '!');
         } elseif ($e->getCode() === 1180615119) {
             /** @see https://github.com/neos/neos-development-collection/blob/master/Neos.Fusion/Classes/Core/Parser.php#L405 */
@@ -340,14 +347,10 @@ class FusionCommandController extends AbstractCommandController
             $this->outputErrorMessage('More closing curly braces than opening ones!');
         } elseif ($e->getCode() === 1180544656) {
             /** @see https://github.com/neos/neos-development-collection/blob/master/Neos.Fusion/Classes/Core/Parser.php#L452 */
-
             preg_match('/Invalid declaration "(.+)"/i', $e->getMessage(), $matches);
             $this->outputErrorMessage('Unknown declaration given: ' . $matches[1] . '!');
-        } elseif (in_array($e->getCode(), [
-            1180548488,
-            1358418019,
-            1358418015,
-        ])) { // no special treatment
+        } elseif (in_array($e->getCode(), [1180548488, 1358418019, 1358418015])) {
+            // no special treatment
             $this->outputErrorMessage($e->getMessage());
         } else {
             $this->outputErrorMessage('[UNKNOWN] ' . $e->getMessage());
@@ -363,25 +366,23 @@ class FusionCommandController extends AbstractCommandController
     protected function colorizeTree(array $tree)
     {
         return preg_replace([
-            '/@[\w.:-]+/', // meta properties
-            '/\$\{(.+)\}/', // EEL expressions
-            '/__objectType => (?!null)([a-zA-Z0-9.:]+)/', // Object types
-            '/([\w-]+(?> =>)?) \[([a-zA-Z0-9.:]+)\]/', // Prototype names
-            '/─ (__[\w.:-]+)/', // internal properties
-            '/─ ([\w.:-]+)/', // other properties
-            '/".+"/', // string values
-            '/\(\?\)$/', // unknown prototype question marks
-            '/ (true|false)$/', // boolean values
-        ], [
-            '<fg=red>$0</>',
-            '<fg=magenta>\${$1}</>',
-            '__objectType => <fg=yellow;options=bold>$1</>',
-            '$1 <fg=yellow;options=bold>[$2]</>',
-            '─ <fg=red>$1</>',
-            '─ <fg=blue>$1</>',
-            '<fg=green>$0</>',
-            '<fg=red;options=reverse>(?)</>',
-            ' <fg=green>$1</>',
-        ], $tree);
+            '/@[\\w.:-]+/',
+            // meta properties
+            '/\\$\\{(.+)\\}/',
+            // EEL expressions
+            '/__objectType => (?!null)([a-zA-Z0-9.:]+)/',
+            // Object types
+            '/([\\w-]+(?> =>)?) \\[([a-zA-Z0-9.:]+)\\]/',
+            // Prototype names
+            '/─ (__[\\w.:-]+)/',
+            // internal properties
+            '/─ ([\\w.:-]+)/',
+            // other properties
+            '/".+"/',
+            // string values
+            '/\\(\\?\\)$/',
+            // unknown prototype question marks
+            '/ (true|false)$/',
+        ], ['<fg=red>$0</>', '<fg=magenta>\\${$1}</>', '__objectType => <fg=yellow;options=bold>$1</>', '$1 <fg=yellow;options=bold>[$2]</>', '─ <fg=red>$1</>', '─ <fg=blue>$1</>', '<fg=green>$0</>', '<fg=red;options=reverse>(?)</>', ' <fg=green>$1</>'], $tree);
     }
 }

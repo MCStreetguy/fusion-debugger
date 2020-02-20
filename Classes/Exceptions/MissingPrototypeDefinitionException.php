@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Exceptions;
 
 /*
@@ -10,12 +11,9 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  */
 class MissingPrototypeDefinitionException extends AbstractDebuggerException
 {
-    public static function forPrototypeName(string $name)
+    public static function forPrototypeName($name)
     {
-        return new self(
-            "Could not find any prototype definition for $name! " .
-            "Maybe you misspelled the name or it's source package is not active.",
-            1564131267910
-        );
+        Assert::string($name);
+        return new self("Could not find any prototype definition for {$name}! " . "Maybe you misspelled the name or it's source package is not active.", 1564131267910);
     }
 }

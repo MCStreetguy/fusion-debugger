@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Command;
 
 /*
@@ -6,6 +7,7 @@ namespace MCStreetguy\FusionDebugger\Command;
  */
 
 use Neos\Flow\Cli\CommandController;
+use Webmozart\Assert\Assert;
 
 /**
  * Separates common styling functions from the actual command controller.
@@ -18,8 +20,9 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message
      * @return void
      */
-    protected function log(string $message)
+    protected function log($message)
     {
+        Assert::string($message);
         if (FLOW_SAPITYPE === 'CLI') {
             echo $message . PHP_EOL;
         }
@@ -31,10 +34,11 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message
      * @return void
      */
-    protected function warning(string $message)
+    protected function warning($message)
     {
+        Assert::string($message);
         if (FLOW_SAPITYPE === 'CLI') {
-            echo "\033[33m" . $message . "\033[0m" . PHP_EOL;
+            echo "\33[33m" . $message . "\33[0m" . PHP_EOL;
         }
     }
 
@@ -44,10 +48,11 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message
      * @return void
      */
-    protected function error(string $message)
+    protected function error($message)
     {
+        Assert::string($message);
         if (FLOW_SAPITYPE === 'CLI') {
-            echo "\033[31m\033[1m" . $message . "\033[0m" . PHP_EOL;
+            echo "\33[31m\33[1m" . $message . "\33[0m" . PHP_EOL;
         }
     }
 
@@ -57,10 +62,11 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message
      * @return void
      */
-    protected function success(string $message)
+    protected function success($message)
     {
+        Assert::string($message);
         if (FLOW_SAPITYPE === 'CLI') {
-            echo "\033[32m" . $message . "\033[0m" . PHP_EOL;
+            echo "\33[32m" . $message . "\33[0m" . PHP_EOL;
         }
     }
 
@@ -70,10 +76,11 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message
      * @return void
      */
-    protected function info(string $message)
+    protected function info($message)
     {
+        Assert::string($message);
         if (FLOW_SAPITYPE === 'CLI') {
-            echo "\033[0;36m" . $message . "\033[0m" . PHP_EOL;
+            echo "\33[0;36m" . $message . "\33[0m" . PHP_EOL;
         }
     }
 
@@ -90,6 +97,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function output($text, array $arguments = [])
     {
+        Assert::string($text);
         $this->output->output($text, $arguments);
     }
 
@@ -105,6 +113,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputLine($text = '', array $arguments = [])
     {
+        Assert::string($text);
         $this->output->outputLine($text, $arguments);
     }
 
@@ -121,6 +130,8 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputFormatted($text = '', array $arguments = [], $leftPadding = 0)
     {
+        Assert::string($text);
+        Assert::integer($leftPadding);
         $this->output->outputFormatted($text, $arguments, $leftPadding);
     }
 
@@ -130,9 +141,10 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message The message to output
      * @return void
      */
-    protected function outputSuccessMessage(string $message)
+    protected function outputSuccessMessage($message)
     {
-        $this->outputLine("<fg=green>$message</>");
+        Assert::string($message);
+        $this->outputLine("<fg=green>{$message}</>");
     }
 
     /**
@@ -141,9 +153,10 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message The message to output
      * @return void
      */
-    protected function outputWarningMessage(string $message)
+    protected function outputWarningMessage($message)
     {
-        $this->outputLine("<fg=yellow>$message</>");
+        Assert::string($message);
+        $this->outputLine("<fg=yellow>{$message}</>");
     }
 
     /**
@@ -152,9 +165,10 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message The message to output
      * @return void
      */
-    protected function outputInfoMessage(string $message)
+    protected function outputInfoMessage($message)
     {
-        $this->outputLine("<fg=cyan>$message</>");
+        Assert::string($message);
+        $this->outputLine("<fg=cyan>{$message}</>");
     }
 
     /**
@@ -163,9 +177,10 @@ abstract class AbstractCommandController extends CommandController
      * @param string $message The message to output
      * @return void
      */
-    protected function outputErrorMessage(string $message)
+    protected function outputErrorMessage($message)
     {
-        $this->outputLine("<fg=red;options=bold>$message</>");
+        Assert::string($message);
+        $this->outputLine("<fg=red;options=bold>{$message}</>");
     }
 
     /**
@@ -175,9 +190,11 @@ abstract class AbstractCommandController extends CommandController
      * @param bool $default The default answer if the user entered nothing
      * @return bool
      */
-    protected function requireConfirmation(string $question, bool $default = false): bool
+    protected function requireConfirmation($question, $default = false)
     {
-        return $this->output->askConfirmation("<comment>$question [y/n]</> ", $default);
+        Assert::string($question);
+        Assert::boolean($default);
+        return $this->output->askConfirmation("<comment>{$question} [y/n]</> ", $default);
     }
 
     /**
@@ -187,8 +204,11 @@ abstract class AbstractCommandController extends CommandController
      * @param int $margin The number of newlines to print above and below the border
      * @return void
      */
-    protected function outputBorder(string $pattern = '-', int $margin = 0)
+    protected function outputBorder($pattern = '-', $margin = 0)
     {
+        Assert::string($pattern);
+        Assert::integer($margin);
+
         $maxLength = $this->output->getMaximumLineLength();
 
         if (mb_strlen($pattern) < $maxLength) {
@@ -219,12 +239,14 @@ abstract class AbstractCommandController extends CommandController
      * @param string $connector The connector string to use for separation of keys and values
      * @return void
      */
-    protected function outputDataList(array $data, string $connector = ':')
+    protected function outputDataList(array $data, $connector = ':')
     {
+        Assert::string($connector);
+
         $maxLength = 0;
+
         foreach (array_keys($data) as $key) {
             $length = mb_strlen($key);
-
             if ($length > $maxLength) {
                 $maxLength = $length;
             }
@@ -232,10 +254,9 @@ abstract class AbstractCommandController extends CommandController
 
         foreach ($data as $key => $value) {
             $key = str_pad($key, $maxLength, ' ', STR_PAD_RIGHT);
-
-            $this->output("<fg=cyan>$key</>");
-            $this->output(" $connector ");
-            $this->output("<fg=green>$value</>");
+            $this->output("<fg=cyan>{$key}</>");
+            $this->output(" {$connector} ");
+            $this->output("<fg=green>{$value}</>");
             $this->output(PHP_EOL);
         }
     }
@@ -262,11 +283,9 @@ abstract class AbstractCommandController extends CommandController
     protected function outputOrderedList(array $data)
     {
         $maxNum = mb_strlen(strval(count($data) + 1)) + 3;
-
         foreach (array_values($data) as $index => $value) {
-            $key = (' ' . ($index + 1) . ')');
+            $key = ' ' . ($index + 1) . ')';
             $key = str_pad($key, $maxNum, ' ', STR_PAD_RIGHT);
-
             $this->outputLine($key . $value);
         }
     }
@@ -277,8 +296,9 @@ abstract class AbstractCommandController extends CommandController
      * @param int $count The number of newlines to print
      * @return void
      */
-    protected function newline(int $count = 1)
+    protected function newline($count = 1)
     {
+        Assert::integer($count);
         for ($i = 0; $i < $count; $i++) {
             $this->output(PHP_EOL);
         }

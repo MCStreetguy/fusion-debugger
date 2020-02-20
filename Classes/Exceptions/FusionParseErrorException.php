@@ -1,4 +1,5 @@
 <?php
+
 namespace MCStreetguy\FusionDebugger\Exceptions;
 
 /*
@@ -10,8 +11,9 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  */
 class FusionParseErrorException extends AbstractDebuggerException
 {
-    public static function forFile(string $path, \Throwable $previous = null)
+    public static function forFile($path, \Throwable $previous = null)
     {
-        return new self("Failed to parse fusion file at $path!", 1564130709438, $previous);
+        Assert::string($path);
+        return new self("Failed to parse fusion file at {$path}!", 1564130709438, $previous);
     }
 }
