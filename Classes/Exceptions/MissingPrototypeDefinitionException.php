@@ -6,6 +6,8 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
+use Webmozart\Assert\Assert;
+
 /**
  * An exception for a missing prototype definition.
  */

@@ -6,6 +6,8 @@ namespace MCStreetguy\FusionDebugger\Exceptions;
  * This file is part of the MCStreetguy.FusionDebugger package.
  */
 
+use Webmozart\Assert\Assert;
+
 /**
  * A fusion file exception.
  */

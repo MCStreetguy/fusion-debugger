@@ -9,6 +9,7 @@ namespace MCStreetguy\FusionDebugger\Utility;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Package\PackageManagerInterface;
 use Neos\Utility\Files;
+use Webmozart\Assert\Assert;
 
 /**
  * @Flow\Scope("singleton")
