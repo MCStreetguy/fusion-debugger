@@ -62,7 +62,7 @@ class Debugger
      */
     public function isPrototypeKnown($name)
     {
-        Assert::string($name);
+        Assert::stringNotEmpty($name);
         return array_key_exists($name, $this->loadFusionTree()[self::PROTOTYPES_KEY]);
     }
 
@@ -75,7 +75,7 @@ class Debugger
      */
     public function loadPrototype($name, $returnBare = false)
     {
-        Assert::string($name);
+        Assert::stringNotEmpty($name);
         Assert::boolean($returnBare);
 
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
@@ -118,7 +118,7 @@ class Debugger
      */
     public function getObjectTree($path = null)
     {
-        Assert::string($path);
+        Assert::nullOrStringNotEmpty($path);
 
         $objectTree = $this->loadFusionTree();
 
@@ -167,7 +167,7 @@ class Debugger
      */
     protected function mergePrototypeChain($basePrototype, array $bareDefinition)
     {
-        Assert::string($basePrototype);
+        Assert::stringNotEmpty($basePrototype);
 
         if (empty($bareDefinition) || !array_key_exists(self::PROTOTYPE_CHAIN_KEY, $bareDefinition)) {
             return $bareDefinition;
@@ -386,7 +386,7 @@ class Debugger
      */
     public function buildVisualFusionTree(array $data, $root = '.')
     {
-        Assert::string($root);
+        Assert::stringNotEmpty($root);
 
         $tree = [$root];
         $cycle = 0;

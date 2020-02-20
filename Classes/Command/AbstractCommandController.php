@@ -22,7 +22,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function log($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         if (FLOW_SAPITYPE === 'CLI') {
             echo $message . PHP_EOL;
         }
@@ -36,7 +36,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function warning($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\33[33m" . $message . "\33[0m" . PHP_EOL;
         }
@@ -50,7 +50,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function error($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\33[31m\33[1m" . $message . "\33[0m" . PHP_EOL;
         }
@@ -64,7 +64,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function success($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\33[32m" . $message . "\33[0m" . PHP_EOL;
         }
@@ -78,7 +78,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function info($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\33[0;36m" . $message . "\33[0m" . PHP_EOL;
         }
@@ -97,7 +97,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function output($text, array $arguments = [])
     {
-        Assert::string($text);
+        Assert::stringNotEmpty($text);
         $this->output->output($text, $arguments);
     }
 
@@ -113,7 +113,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputLine($text = '', array $arguments = [])
     {
-        Assert::string($text);
+        Assert::stringNotEmpty($text);
         $this->output->outputLine($text, $arguments);
     }
 
@@ -130,7 +130,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputFormatted($text = '', array $arguments = [], $leftPadding = 0)
     {
-        Assert::string($text);
+        Assert::stringNotEmpty($text);
         Assert::integer($leftPadding);
         $this->output->outputFormatted($text, $arguments, $leftPadding);
     }
@@ -143,7 +143,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputSuccessMessage($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         $this->outputLine("<fg=green>{$message}</>");
     }
 
@@ -155,7 +155,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputWarningMessage($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         $this->outputLine("<fg=yellow>{$message}</>");
     }
 
@@ -167,7 +167,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputInfoMessage($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         $this->outputLine("<fg=cyan>{$message}</>");
     }
 
@@ -179,7 +179,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputErrorMessage($message)
     {
-        Assert::string($message);
+        Assert::stringNotEmpty($message);
         $this->outputLine("<fg=red;options=bold>{$message}</>");
     }
 
@@ -192,7 +192,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function requireConfirmation($question, $default = false)
     {
-        Assert::string($question);
+        Assert::stringNotEmpty($question);
         Assert::boolean($default);
         return $this->output->askConfirmation("<comment>{$question} [y/n]</> ", $default);
     }
@@ -206,7 +206,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputBorder($pattern = '-', $margin = 0)
     {
-        Assert::string($pattern);
+        Assert::stringNotEmpty($pattern);
         Assert::integer($margin);
 
         $maxLength = $this->output->getMaximumLineLength();
@@ -241,7 +241,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputDataList(array $data, $connector = ':')
     {
-        Assert::string($connector);
+        Assert::stringNotEmpty($connector);
 
         $maxLength = 0;
 

@@ -77,7 +77,7 @@ class FusionCommandController extends AbstractCommandController
      */
     public function lintCommand($packageKey = null, $verbose = false, $quiet = false)
     {
-        Assert::string($packageKey);
+        Assert::nullOrStringNotEmpty($packageKey);
         Assert::boolean($verbose);
         Assert::boolean($quiet);
 
@@ -174,7 +174,7 @@ class FusionCommandController extends AbstractCommandController
      */
     public function showObjectTreeCommand($path = null, $noColor = false, $notFlat = false)
     {
-        Assert::string($path);
+        Assert::nullOrStringNotEmpty($path);
         Assert::boolean($noColor);
         Assert::boolean($notFlat);
 
@@ -240,7 +240,7 @@ class FusionCommandController extends AbstractCommandController
      */
     public function debugPrototypeCommand($prototype, $noColor = false, $notFlat = false)
     {
-        Assert::string($prototype);
+        Assert::stringNotEmpty($prototype);
         Assert::boolean($noColor);
         Assert::boolean($notFlat);
 
@@ -307,7 +307,7 @@ class FusionCommandController extends AbstractCommandController
      */
     protected function expandPrototypeName($name)
     {
-        Assert::string($name);
+        Assert::stringNotEmpty($name);
 
         list($vendorPrefix, $prototypeName) = explode(':', $name, 2);
 

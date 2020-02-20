@@ -75,8 +75,8 @@ class FusionFile
      */
     public function __construct($packageKey, $filePathAndName)
     {
-        Assert::string($packageKey);
-        Assert::string($filePathAndName);
+        Assert::stringNotEmpty($packageKey);
+        Assert::stringNotEmpty($filePathAndName);
 
         if (!file_exists($filePathAndName) || !is_readable($filePathAndName)) {
             throw FusionFileException::forMissingOrNotReadable($filePathAndName);

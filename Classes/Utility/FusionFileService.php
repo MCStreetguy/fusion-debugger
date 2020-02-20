@@ -43,7 +43,7 @@ class FusionFileService
      */
     public function load($fromPackageKey = null)
     {
-        Assert::string($fromPackageKey);
+        Assert::nullOrString($fromPackageKey);
 
         $staticCacheKey = '*';
         $foundFusionFiles = [];
