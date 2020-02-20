@@ -11,7 +11,6 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Installation](#installation)
-    - [Troubleshooting](#troubleshooting)
   - [Reference](#reference)
     - [Commands](#commands)
       - [`fusion:debugprototype`](#fusiondebugprototype)
@@ -50,18 +49,7 @@ To get rid of that uncertainty this Plugin allows you to visualize what you norm
 Install the plugin by requiring it through composer:
 
 ``` bash
-composer require --dev mcstreetguy/fusion-debugger
-```
-
-### Troubleshooting
-
-> Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability
-
-Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
-Alternatively you could require the package with an explicit alpha-version constraint, but please note that this will only work for root-level manifests:
-
-``` bash
-composer require --dev mcstreetguy/fusion-debugger:@alpha
+composer require --dev mcstreetguy/fusion-debugger:dev-backport
 ```
 
 ## Reference
