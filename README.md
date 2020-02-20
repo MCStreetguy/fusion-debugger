@@ -12,6 +12,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Overview](#overview)
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
+    - [Support for older Neos / PHP](#support-for-older-neos--php)
   - [Reference](#reference)
     - [Commands](#commands)
       - [`fusion:debugprototype`](#fusiondebugprototype)
@@ -63,6 +64,21 @@ Alternatively you could require the package with an explicit alpha-version const
 ``` bash
 composer require --dev mcstreetguy/fusion-debugger:@alpha
 ```
+
+### Support for older Neos / PHP
+
+The plugin normally is written vor Neos v3.3 and above and in addition makes extensive use of PHP7.1 features.
+To make the functionality available for Neos v3.0-v3.2 and also for older PHP versions like 7.0 and 5.6 the plugin has been backported.
+In that version all type hinting has been replaced by assertions and the composer requirements have been adapted.
+
+To install the backported version you may also require it through composer:
+
+``` bash
+composer require --dev mcstreetguy/fusion-debugger:dev-backport
+```
+
+Please not that this backported version will not be tagged accordingly.
+The backport branch will be kept up with the master as much as possible to provide you latest features, but we cannot guarantee that this will happen simultaneously.
 
 ## Reference
 
