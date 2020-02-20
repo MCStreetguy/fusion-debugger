@@ -20,7 +20,7 @@
     "require": {
         "neos/flow": ">=4.0.0 <4.3",
         "neos/fusion": ">=3.0.0 <3.3",
-        "webmozart/assert": "^1.7"
+        "webmozart/assert": "^1.0"
     },
     "require-dev": {
         "kint-php/kint": "^3.2"
