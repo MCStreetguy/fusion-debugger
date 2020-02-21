@@ -12,6 +12,8 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Overview](#overview)
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
+      - [`Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`](#could-not-find-a-version-of-package-mcstreetguyfusion-debugger-matching-your-minimum-stability)
+      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name-%22%22-make-sure-your-controller-is-in-a-folder-named-%22command%22-and-its-name-ends-in-%22commandcontroller%22)
     - [Support for older Neos / PHP](#support-for-older-neos--php)
   - [Reference](#reference)
     - [Commands](#commands)
@@ -56,7 +58,7 @@ composer require --dev mcstreetguy/fusion-debugger
 
 ### Troubleshooting
 
-> Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability
+#### `Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`
 
 Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
 Alternatively you could require the package with an explicit alpha-version constraint, but please note that this will only work for root-level manifests:
@@ -64,6 +66,24 @@ Alternatively you could require the package with an explicit alpha-version const
 ``` bash
 composer require --dev mcstreetguy/fusion-debugger:@alpha
 ```
+
+#### `Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`
+
+This error happens only straight after installing the plugin as this corrupts the internal code caches of Flow in some way.  
+We couldn't locate the origin of this problem yet but hope to resolve it asap!
+Until then we recommend force-clearing the application caches after requiring the plugin through composer, as the automatic graceful clear during the installation is what probably causes this problem to arise.
+
+``` bash
+/path/to/flow flow:cache:flush --force
+```
+
+If you encounter this error on a production server you also may need to flush the caches for 'Production'-context.  
+
+``` bash
+FLOW_CONTEXT=Production /path/to/flow flow:cache:flush --force
+```
+
+**However, you should not install debugger tools in a production environment anyway!**
 
 ### Support for older Neos / PHP
 
