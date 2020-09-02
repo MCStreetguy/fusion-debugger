@@ -13,7 +13,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
       - [`Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`](#could-not-find-a-version-of-package-mcstreetguyfusion-debugger-matching-your-minimum-stability)
-      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name-%22%22-make-sure-your-controller-is-in-a-folder-named-%22command%22-and-its-name-ends-in-%22commandcontroller%22)
+      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name--make-sure-your-controller-is-in-a-folder-named-command-and-its-name-ends-in-commandcontroller)
     - [Support for older Neos / PHP](#support-for-older-neos--php)
   - [Reference](#reference)
     - [Commands](#commands)
@@ -23,8 +23,6 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
       - [`fusion:listprototypes`](#fusionlistprototypes)
     - [Configuration](#configuration)
       - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
-      - [`namespaceMap`](#namespacemap)
-        - [Namespace Map Example](#namespace-map-example)
   - [Versioning](#versioning)
   - [Authors](#authors)
   - [License](#license)
@@ -152,22 +150,6 @@ The following placeholders can be used inside the pattern and will be exchanged 
 | **Placeholder** | **Description** |
 |----------------:|:----------------|
 | `@package` | The current package key from where the fusion gets loaded. |
-
-#### `namespaceMap`
-
-An associative array of fusion namespace shorthands to full namespaces mappings.
-By default, no namespace is set as this varies widely and depends on the current use case.
-If you define namespace mappings here, these will be taken into account for the [`fusion:debugprototype`](#fusiondebugprototype) command.
-
-##### Namespace Map Example
-
-```yaml
-MCStreetguy:
-  FusionDebugger:
-    namespaceMap:
-      'N': 'Neos.Neos'
-      'F': 'Neos.Fusion'
-```
 
 ## Versioning
 
