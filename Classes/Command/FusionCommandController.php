@@ -240,8 +240,6 @@ class FusionCommandController extends AbstractCommandController
      */
     public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $notFlat = false)
     {
-        $prototype = $this->expandPrototypeName($prototype);
-
         try {
             $definition = $this->debugger->loadPrototype($prototype);
         } catch (AbstractDebuggerException $e) {
@@ -277,8 +275,6 @@ class FusionCommandController extends AbstractCommandController
      */
     public function listPrototypesCommand(bool $noFormat = false)
     {
-        $prototypeNames = \array_keys($this->debugger->loadAllDefinitions(true));
-
         if ($noFormat === false) {
             \natsort($prototypeNames);
 
@@ -292,24 +288,6 @@ class FusionCommandController extends AbstractCommandController
     }
 
     // Service methods
-
-    /**
-     * Expand the given prototype name by replacing any namespace shorthand.
-     *
-     * @param string $name The prototype name
-     * @return string
-     */
-    protected function expandPrototypeName(string $name)
-    {
-        list($vendorPrefix, $prototypeName) = explode(':', $name, 2);
-
-        if (array_key_exists($vendorPrefix, $this->settings['namespaceMap'])) {
-            $vendorPrefix = $this->settings['namespaceMap'][$vendorPrefix];
-            $this->outputInfoMessage("Note: Prototype name expanded from '$name' to '$vendorPrefix:$prototypeName'!");
-        }
-
-        return $vendorPrefix . ':' . $prototypeName;
-    }
 
     /**
      * Output a short version of the given exception message.
