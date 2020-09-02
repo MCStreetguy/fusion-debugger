@@ -112,7 +112,6 @@ Please see the respective help pages for more detailled information.
 Reads the definition of the requested prototype from the `__prototypes` key in the parsed object tree and resolves the contained prototype chain very carefully so that the result contains all properties, either inherited or explictely defined.
 For better readability, this command also includes something similar to syntax highlighting as several parts of the built tree are colored (such as eel expressions, further prototype names or just plain strings). Furthermore it flattens the resulting data by removing empty properties and combining the internal properties for e.g. plain values (as these are stored with three properties but could be displayed directly without an array structure).
 These additional behaviour can be suppressed by specifying the options `--no-color` or `--not-flat` if it corrupts the resulting data or your terminal does not support ANSI colors.
-If you have namespace mappings defined in `MCStreetguy.FusionDebugger.namespaceMap`, these will be resolved before loading the prototype.
 
 #### `fusion:showobjecttree`
 
