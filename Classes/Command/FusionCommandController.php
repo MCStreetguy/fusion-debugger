@@ -225,8 +225,6 @@ class FusionCommandController extends AbstractCommandController
      * by the positional property '@position' if it is present, while meta keys get shifted to the beginning.
      * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
      * if it corrupts the resulting data or your terminal does not support ANSI colors.
-     * If you have namespace mappings defined in `MCStreetguy.FusionDebugger.namespaceMap`,
-     * these will be resolved before loading the prototype.
      *
      * If you encounter a '(?)' sign after a further prototype name, this means that the named prototype
      * could not be found in the current prototype hierachie. These could probably cause rendering errors
