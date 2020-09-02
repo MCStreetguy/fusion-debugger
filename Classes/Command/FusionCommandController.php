@@ -275,6 +275,8 @@ class FusionCommandController extends AbstractCommandController
      */
     public function listPrototypesCommand(bool $noFormat = false, bool $noSort = false)
     {
+        $prototypeNames = \array_keys($this->debugger->loadAllDefinitions());
+
         if (!$noSort) {
             \natsort($prototypeNames);
         }
