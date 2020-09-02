@@ -59,7 +59,7 @@ class FusionFileService
             $sourcePackages = [$this->packageManager->getPackage($fromPackageKey)];
             $staticCacheKey = $fromPackageKey;
         } else {
-            $sourcePackages = $this->packageManager->getActivePackages();
+            $sourcePackages = $this->packageManager->getAvailablePackages();
         }
 
         /** @var PackageInterface $package */
