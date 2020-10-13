@@ -13,7 +13,7 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
       - [`Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`](#could-not-find-a-version-of-package-mcstreetguyfusion-debugger-matching-your-minimum-stability)
-      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name-%22%22-make-sure-your-controller-is-in-a-folder-named-%22command%22-and-its-name-ends-in-%22commandcontroller%22)
+      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name--make-sure-your-controller-is-in-a-folder-named-command-and-its-name-ends-in-commandcontroller)
     - [Support for older Neos / PHP](#support-for-older-neos--php)
   - [Reference](#reference)
     - [Commands](#commands)
@@ -76,6 +76,10 @@ Until then we recommend force-clearing the application caches after requiring th
 ``` bash
 /path/to/flow flow:cache:flush --force
 ```
+
+In some edge cases it might happen that the entire Flow CLI stops working upon installation.
+In that case you are required to manually empty the corresponding `Data/Temporary` directory, that will get Flow running again.
+If you are uncertain which directories to remove, you may also delete the entire directory at once, causing Flow to regenerate it fully.
 
 If you encounter this error on a production server you also may need to flush the caches for 'Production'-context.  
 
