@@ -59,10 +59,12 @@ composer require --dev mcstreetguy/fusion-debugger
 #### `Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`
 
 Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
-Alternatively you could require the package with an explicit alpha-version constraint, but please note that this will only work for root-level manifests:
+Alternatively you could require the package with an explicit alpha- or dev-version constraint, but please note that this will only work for root-level manifests:
 
 ``` bash
 composer require --dev mcstreetguy/fusion-debugger:@alpha
+# or
+composer require --dev mcstreetguy/fusion-debugger:@dev
 ```
 
 #### `Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`
@@ -74,6 +76,10 @@ Until then we recommend force-clearing the application caches after requiring th
 ``` bash
 /path/to/flow flow:cache:flush --force
 ```
+
+In some edge cases it might happen that the entire Flow CLI stops working upon installation.
+In that case you are required to manually empty the corresponding `Data/Temporary` directory, that will get Flow running again.
+If you are uncertain which directories to remove, you may also delete the entire directory at once, causing Flow to regenerate it fully.
 
 If you encounter this error on a production server you also may need to flush the caches for 'Production'-context.  
 
