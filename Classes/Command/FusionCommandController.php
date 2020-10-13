@@ -10,7 +10,7 @@ use MCStreetguy\FusionDebugger\Fusion\Debugger;
 use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
-use Neos\Flow\Package\PackageManagerInterface;
+use Neos\Flow\Package\PackageManager;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
 
@@ -34,7 +34,7 @@ class FusionCommandController extends AbstractCommandController
 
     /**
      * @Flow\Inject
-     * @var PackageManagerInterface
+     * @var PackageManager
      */
     protected $packageManager;
 
