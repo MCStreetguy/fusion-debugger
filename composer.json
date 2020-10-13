@@ -18,8 +18,8 @@
         "email": "maximilianschmidt404@gmail.com"
     },
     "require": {
-        "neos/flow": "^5.0",
-        "neos/fusion": "^4.0"
+        "neos/flow": "^6.0",
+        "neos/fusion": "^5.0"
     },
     "require-dev": {
         "kint-php/kint": "^3.2"
