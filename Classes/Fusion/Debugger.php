@@ -431,6 +431,12 @@ class Debugger
             } elseif ($value === null) {
                 // Special treatment for values that are explicitly 'null'
                 $tree[] = $prefix . $key . ' => null';
+            } elseif ($type === 'integer' || $type === 'double') {
+                // Print numbers as they are (prevents misinterpretion later on)
+                $tree[] = $prefix . $key . ' => ' . $value;
+            } elseif ($type === 'string' && is_numeric($value)) {
+                // Special treatment for numeric strings (prevents misinterpretion later on)
+                $tree[] = $prefix . $key . ' => "' . $value . '"';
             } elseif ($value === false) {
                 // Special treatment for values that are explicitly 'false'
                 $tree[] = $prefix . $key . ' => false';
