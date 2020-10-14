@@ -284,7 +284,7 @@ class FusionCommandController extends AbstractCommandController
     {
         Assert::boolean($noFormat);
 
-        $prototypeNames = \array_keys($this->debugger->loadAllDefinitions(true));
+        $prototypeNames = $this->debugger->getPrototypeNames();
 
         if ($noFormat === false) {
             \natsort($prototypeNames);
