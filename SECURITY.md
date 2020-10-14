@@ -7,6 +7,7 @@
 |   Version    |      Supported       |
 | :----------: | :------------------: |
 |  dev-master  | (:white_check_mark:) |
+|   5.x-dev    | (:white_check_mark:) |
 |   4.x-dev    | (:white_check_mark:) |
 |   3.x-dev    | (:white_check_mark:) |
 |  0.6-alpha   |         :x:          |
