@@ -1,11 +1,11 @@
-# MCStreetguy.FusionDebugger
+# MCStreetguy.FusionDebugger for Neos v3
 
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
 -------
 ## Table of Contents
 
-- [MCStreetguy.FusionDebugger](#mcstreetguyfusiondebugger)
+- [MCStreetguy.FusionDebugger for Neos v3](#mcstreetguyfusiondebugger-for-neos-v3)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Installation](#installation)
