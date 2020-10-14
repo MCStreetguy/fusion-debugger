@@ -2,8 +2,6 @@
 
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
-**PLEASE NOTE! This plugin is currently work in progress and alls of it's parts are subject to change probably! You should not rely on this in a production environment yet as it is not proven to be stable!**
-
 -------
 ## Table of Contents
 
