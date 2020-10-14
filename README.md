@@ -51,6 +51,19 @@ Install the plugin by requiring it through composer:
 composer require --dev mcstreetguy/fusion-debugger
 ```
 
+If composer refuses to install the plugin, try requiring a specific version of it.
+The major version of this project will always work with the corresponding Neos release.
+
+``` bash
+composer require --dev mcstreetguy/fusion-debugger:^5.0   # for Neos v5.x
+composer require --dev mcstreetguy/fusion-debugger:^4.0   # for Neos v4.x
+composer require --dev mcstreetguy/fusion-debugger:^3.0   # for Neos v3.x
+```
+
+We support all Neos versions ranging from 3.0 up to 5.3 officially.
+For any other version you may encounter unexpected issues and there is no guarantee that the debugger will work properly!
+(Even though we kind of support Neos v2.3, see [below](#support-for-older-neos--php) for more information.)
+
 ### Troubleshooting
 
 #### `Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`
@@ -144,7 +157,7 @@ The following placeholders can be used inside the pattern and will be exchanged 
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/MCStreetguy/fusion-debugger/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/MCStreetguy/fusion-debugger/tags).  
 
 ## Authors
 
