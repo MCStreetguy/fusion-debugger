@@ -122,6 +122,16 @@ class Debugger
         return $objectTree;
     }
 
+    /**
+     * Get all defined prototype names.
+     *
+     * @return string[]
+     */
+    public function getPrototypeNames()
+    {
+        return array_keys($this->loadFusionTree()[self::PROTOTYPES_KEY]);
+    }
+
     // Helper methods
 
     /**
