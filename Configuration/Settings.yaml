@@ -4,6 +4,5 @@
 
 MCStreetguy:
   FusionDebugger:
-    namespaceMap: []
     fusionFilePathPatterns:
       - resource://@package/Private/Fusion/

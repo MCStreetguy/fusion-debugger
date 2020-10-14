@@ -23,8 +23,6 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
       - [`fusion:listprototypes`](#fusionlistprototypes)
     - [Configuration](#configuration)
       - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
-      - [`namespaceMap`](#namespacemap)
-        - [Namespace Map Example](#namespace-map-example)
   - [Versioning](#versioning)
   - [Authors](#authors)
   - [License](#license)
@@ -61,10 +59,12 @@ composer require --dev mcstreetguy/fusion-debugger
 #### `Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`
 
 Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
-Alternatively you could require the package with an explicit alpha-version constraint, but please note that this will only work for root-level manifests:
+Alternatively you could require the package with an explicit alpha- or dev-version constraint, but please note that this will only work for root-level manifests:
 
 ``` bash
 composer require --dev mcstreetguy/fusion-debugger:@alpha
+# or
+composer require --dev mcstreetguy/fusion-debugger:@dev
 ```
 
 #### `Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`
@@ -113,12 +113,11 @@ Please see the respective help pages for more detailled information.
 
 #### `fusion:debugprototype`
   
-> `mcstreetguy.fusiondebugger:fusion:debugprototype [--no-color] [--not-flat] <prototype>`
+> `mcstreetguy.fusiondebugger:fusion:debugprototype [--no-color] [--no-flatten] <prototype>`
 
 Reads the definition of the requested prototype from the `__prototypes` key in the parsed object tree and resolves the contained prototype chain very carefully so that the result contains all properties, either inherited or explictely defined.
 For better readability, this command also includes something similar to syntax highlighting as several parts of the built tree are colored (such as eel expressions, further prototype names or just plain strings). Furthermore it flattens the resulting data by removing empty properties and combining the internal properties for e.g. plain values (as these are stored with three properties but could be displayed directly without an array structure).
-These additional behaviour can be suppressed by specifying the options `--no-color` or `--not-flat` if it corrupts the resulting data or your terminal does not support ANSI colors.
-If you have namespace mappings defined in `MCStreetguy.FusionDebugger.namespaceMap`, these will be resolved before loading the prototype.
+These additional behaviour can be suppressed by specifying the options `--no-color` or `--no-flatten` if it corrupts the resulting data or your terminal does not support ANSI colors.
 
 #### `fusion:showobjecttree`
 
@@ -156,22 +155,6 @@ The following placeholders can be used inside the pattern and will be exchanged 
 | **Placeholder** | **Description** |
 |----------------:|:----------------|
 | `@package` | The current package key from where the fusion gets loaded. |
-
-#### `namespaceMap`
-
-An associative array of fusion namespace shorthands to full namespaces mappings.
-By default, no namespace is set as this varies widely and depends on the current use case.
-If you define namespace mappings here, these will be taken into account for the [`fusion:debugprototype`](#fusiondebugprototype) command.
-
-##### Namespace Map Example
-
-```yaml
-MCStreetguy:
-  FusionDebugger:
-    namespaceMap:
-      'N': 'Neos.Neos'
-      'F': 'Neos.Fusion'
-```
 
 ## Versioning
 

@@ -6,7 +6,7 @@ namespace MCStreetguy\FusionDebugger\Utility;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Package\PackageManagerInterface;
+use Neos\Flow\Package\PackageManager;
 use Neos\Utility\Files;
 
 /**
@@ -29,7 +29,7 @@ class FusionFileService
 
     /**
      * @Flow\Inject
-     * @var PackageManagerInterface
+     * @var PackageManager
      */
     protected $packageManager;
 
@@ -59,7 +59,7 @@ class FusionFileService
             $sourcePackages = [$this->packageManager->getPackage($fromPackageKey)];
             $staticCacheKey = $fromPackageKey;
         } else {
-            $sourcePackages = $this->packageManager->getActivePackages();
+            $sourcePackages = $this->packageManager->getAvailablePackages();
         }
 
         /** @var PackageInterface $package */

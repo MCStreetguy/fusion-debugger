@@ -10,7 +10,7 @@ use MCStreetguy\FusionDebugger\Fusion\Debugger;
 use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
-use Neos\Flow\Package\PackageManagerInterface;
+use Neos\Flow\Package\PackageManager;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
 
@@ -34,7 +34,7 @@ class FusionCommandController extends AbstractCommandController
 
     /**
      * @Flow\Inject
-     * @var PackageManagerInterface
+     * @var PackageManager
      */
     protected $packageManager;
 
@@ -164,7 +164,7 @@ class FusionCommandController extends AbstractCommandController
      * and combining the internal properties for e.g. plain values (as these are stored with three properties
      * but could be displayed directly without an array structure). The resulting tree is sorted recursively
      * by the positional property '@position' if it is present, while meta keys get shifted to the beginning.
-     * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
+     * These additional behaviour can be suppressed by specifying the options --no-color or --no-flatten
      * if it corrupts the resulting data or your terminal does not support ANSI colors.
      *
      * If you encounter a '(?)' sign after a further prototype name, this means that the named prototype
@@ -174,11 +174,11 @@ class FusionCommandController extends AbstractCommandController
      *
      * @param string $path A fusion path to filter the object tree by
      * @param bool $noColor Suppress any colorized output
-     * @param bool $notFlat Don't flatten the prototype definition array
+     * @param bool $noFlatten Don't flatten the prototype definition array
      * @return void
      * @see mcstreetguy.fusiondebugger:fusion:debugprototype
      */
-    public function showObjectTreeCommand(string $path = null, bool $noColor = false, bool $notFlat = false)
+    public function showObjectTreeCommand(string $path = null, bool $noColor = false, bool $noFlatten = false)
     {
         if ($path === '__prototypes') {
             $this->outputWarningMessage('Please use the fusion:debugprototype command to debug Fusion prototypes!');
@@ -192,7 +192,7 @@ class FusionCommandController extends AbstractCommandController
             $this->sendAndExit(round($e->getCode() % 255));
         }
 
-        if ($notFlat === false) {
+        if ($noFlatten === false) {
             $objectTree = $this->debugger->flattenPrototypeDefinition($objectTree);
         }
 
@@ -224,10 +224,8 @@ class FusionCommandController extends AbstractCommandController
      * and combining the internal properties for e.g. plain values (as these are stored with three properties
      * but could be displayed directly without an array structure). The resulting tree is sorted recursively
      * by the positional property '@position' if it is present, while meta keys get shifted to the beginning.
-     * These additional behaviour can be suppressed by specifying the options --no-color or --not-flat
+     * These additional behaviour can be suppressed by specifying the options --no-color or --no-flatten
      * if it corrupts the resulting data or your terminal does not support ANSI colors.
-     * If you have namespace mappings defined in `MCStreetguy.FusionDebugger.namespaceMap`,
-     * these will be resolved before loading the prototype.
      *
      * If you encounter a '(?)' sign after a further prototype name, this means that the named prototype
      * could not be found in the current prototype hierachie. These could probably cause rendering errors
@@ -236,13 +234,11 @@ class FusionCommandController extends AbstractCommandController
      *
      * @param string $prototype The prototype to resolve the definition for
      * @param bool $noColor Suppress any colorized output
-     * @param bool $notFlat Don't flatten the prototype definition array
+     * @param bool $noFlatten Don't flatten the prototype definition array
      * @return void
      */
-    public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $notFlat = false)
+    public function debugPrototypeCommand(string $prototype, bool $noColor = false, bool $noFlatten = false)
     {
-        $prototype = $this->expandPrototypeName($prototype);
-
         try {
             $definition = $this->debugger->loadPrototype($prototype);
         } catch (AbstractDebuggerException $e) {
@@ -250,7 +246,7 @@ class FusionCommandController extends AbstractCommandController
             $this->sendAndExit(round($e->getCode() % 255));
         }
 
-        if ($notFlat === false) {
+        if ($noFlatten === false) {
             $definition = $this->debugger->flattenPrototypeDefinition($definition);
         }
 
@@ -274,15 +270,19 @@ class FusionCommandController extends AbstractCommandController
      *
      * List all known prototypes by their names.
      *
+     * @param bool $noFormat Don't format the output as list
+     * @param bool $noSort Don't sort the prototype list by name
      * @return void
      */
-    public function listPrototypesCommand(bool $noFormat = false)
+    public function listPrototypesCommand(bool $noFormat = false, bool $noSort = false)
     {
         $prototypeNames = $this->debugger->getPrototypeNames();
 
-        if ($noFormat === false) {
+        if (!$noSort) {
             \natsort($prototypeNames);
+        }
 
+        if ($noFormat === false) {
             $this->outputUnorderedList($prototypeNames);
             $this->quit(0);
         }
@@ -293,24 +293,6 @@ class FusionCommandController extends AbstractCommandController
     }
 
     // Service methods
-
-    /**
-     * Expand the given prototype name by replacing any namespace shorthand.
-     *
-     * @param string $name The prototype name
-     * @return string
-     */
-    protected function expandPrototypeName(string $name)
-    {
-        list($vendorPrefix, $prototypeName) = explode(':', $name, 2);
-
-        if (array_key_exists($vendorPrefix, $this->settings['namespaceMap'])) {
-            $vendorPrefix = $this->settings['namespaceMap'][$vendorPrefix];
-            $this->outputInfoMessage("Note: Prototype name expanded from '$name' to '$vendorPrefix:$prototypeName'!");
-        }
-
-        return $vendorPrefix . ':' . $prototypeName;
-    }
 
     /**
      * Output a short version of the given exception message.
