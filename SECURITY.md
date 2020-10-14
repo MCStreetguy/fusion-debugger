@@ -9,7 +9,7 @@
 |  dev-master  | (:white_check_mark:) |
 |   4.x-dev    | (:white_check_mark:) |
 |   3.x-dev    | (:white_check_mark:) |
-|  0.6-alpha   |  :white_check_mark:  |
+|  0.6-alpha   |         :x:          |
 |  0.5-alpha   |         :x:          |
 |  0.4-alpha   |         :x:          |
 |  0.3-alpha   |         :x:          |
