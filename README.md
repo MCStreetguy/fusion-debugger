@@ -12,7 +12,6 @@ A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code
   - [Overview](#overview)
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
-      - [`Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`](#could-not-find-a-version-of-package-mcstreetguyfusion-debugger-matching-your-minimum-stability)
       - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name--make-sure-your-controller-is-in-a-folder-named-command-and-its-name-ends-in-commandcontroller)
     - [Support for older Neos / PHP](#support-for-older-neos--php)
   - [Reference](#reference)
@@ -55,17 +54,6 @@ composer require --dev mcstreetguy/fusion-debugger
 ```
 
 ### Troubleshooting
-
-#### `Could not find a version of package mcstreetguy/fusion-debugger matching your minimum-stability`
-
-Please make sure that your `minimum-stability` is at least set to `alpha` as this package has no stable release yet.
-Alternatively you could require the package with an explicit alpha- or dev-version constraint, but please note that this will only work for root-level manifests:
-
-``` bash
-composer require --dev mcstreetguy/fusion-debugger:@alpha
-# or
-composer require --dev mcstreetguy/fusion-debugger:@dev
-```
 
 #### `Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`
 
