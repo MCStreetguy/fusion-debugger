@@ -115,7 +115,8 @@ class FusionCommandController extends AbstractCommandController
             }
 
             if ($verbose && !$quiet) {
-                $this->outputSuccessMessage("File {$file->getRelativePath()} contains no errors.");
+                $relativeFilePath = preg_replace(self::RELATIVE_PATH_SUBTRACTOR_PATTERN, '', $file->getFullPath());
+                $this->outputSuccessMessage("File '$relativeFilePath' contains no errors.");
             } elseif (!$quiet) {
                 $this->output->progressAdvance();
             }
