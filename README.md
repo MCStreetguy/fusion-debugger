@@ -1,18 +1,20 @@
-# MCStreetguy.FusionDebugger
+# MCStreetguy.FusionDebugger (backport version)
 
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
-**PLEASE NOTE! This plugin is currently work in progress and alls of it's parts are subject to change probably! You should not rely on this in a production environment yet as it is not proven to be stable!**
+**PLEASE NOTE! The 'backport'-version of this plugin is not officially supported!**
+Even though we try to keep a functioning version on here, there is no guarantee that this branch will stay maintained.
+Nevertheless you should consider updating to a newer Neos version urgently!
 
 -------
 ## Table of Contents
 
-- [MCStreetguy.FusionDebugger](#mcstreetguyfusiondebugger)
+- [MCStreetguy.FusionDebugger (backport version)](#mcstreetguyfusiondebugger-backport-version)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Installation](#installation)
     - [Troubleshooting](#troubleshooting)
-      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name-%22%22-make-sure-your-controller-is-in-a-folder-named-%22command%22-and-its-name-ends-in-%22commandcontroller%22)
+      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name--make-sure-your-controller-is-in-a-folder-named-command-and-its-name-ends-in-commandcontroller)
   - [Reference](#reference)
     - [Commands](#commands)
       - [`fusion:debugprototype`](#fusiondebugprototype)
