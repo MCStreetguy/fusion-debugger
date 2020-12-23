@@ -18,7 +18,7 @@
         "email": "maximilianschmidt404@gmail.com"
     },
     "require": {
-        "neos/flow": "^6.0",
+        "neos/flow": "^7.0",
         "neos/fusion": "^7.0"
     },
     "require-dev": {
