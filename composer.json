@@ -19,7 +19,7 @@
     },
     "require": {
         "neos/flow": "^6.0",
-        "neos/fusion": "^5.0"
+        "neos/fusion": "^7.0"
     },
     "require-dev": {
         "kint-php/kint": "^3.2"
