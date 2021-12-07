@@ -367,7 +367,7 @@ class Debugger
         unset($results[self::PROTOTYPE_OBJECT_NAME_KEY]);
 
         // Sort the data by their positional array property
-        $sortedResults = new PositionalArraySorter($results, '@position');
+        $sortedResults = new PositionalArraySorter($results, '\@position');
         $results = $sortedResults->toArray();
 
         // Move all meta keys to the beginning of the array
