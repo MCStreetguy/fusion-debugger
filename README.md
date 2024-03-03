@@ -50,18 +50,21 @@ composer require --dev mcstreetguy/fusion-debugger
 
 If composer refuses to install the plugin, try requiring a specific version of it.
 The major version of this project will always work with the corresponding Neos release.
+We support all Neos versions ranging from 3.0 upwards officially, although every version below 7.0 is considered legacy at this point and won't receive updates or new features anymore.
 
 ``` bash
 composer require --dev mcstreetguy/fusion-debugger:^8.0   # for Neos v8.x
 composer require --dev mcstreetguy/fusion-debugger:^7.0   # for Neos v7.x
-composer require --dev mcstreetguy/fusion-debugger:^5.0   # for Neos v5.x
-composer require --dev mcstreetguy/fusion-debugger:^4.0   # for Neos v4.x
-composer require --dev mcstreetguy/fusion-debugger:^3.0   # for Neos v3.x
+composer require --dev mcstreetguy/fusion-debugger:^5.0   # for Neos v5.x (legacy)
+composer require --dev mcstreetguy/fusion-debugger:^4.0   # for Neos v4.x (legacy)
+composer require --dev mcstreetguy/fusion-debugger:^3.0   # for Neos v3.x (legacy)
 ```
 
-We support all Neos versions ranging from 3.0 up to 7.0 officially.
-For any other version you may encounter unexpected issues and there is no guarantee that the debugger will work properly!
-(Even though we kind of support Neos v2.3, see [below](#support-for-older-neos--php) for more information.)
+The plugin provides a seperate backport version, which omits typehinting to be compatible with older PHP and Neos 2.3:
+
+``` bash
+composer require --dev mcstreetguy/fusion-debugger:dev-backport
+```
 
 ### Usage outside of Neos
 
