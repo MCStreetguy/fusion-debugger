@@ -3,27 +3,23 @@
 A small plugin for the awesome Neos CMS, to improve debugging of Fusion DSL code.
 
 -------
-## Table of Contents
 
-- [MCStreetguy.FusionDebugger](#mcstreetguyfusiondebugger)
-  - [Table of Contents](#table-of-contents)
-  - [Overview](#overview)
-  - [Installation](#installation)
-    - [Usage outside of Neos](#usage-outside-of-neos)
-    - [Troubleshooting](#troubleshooting)
-      - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name--make-sure-your-controller-is-in-a-folder-named-command-and-its-name-ends-in-commandcontroller)
-    - [Support for older Neos / PHP](#support-for-older-neos--php)
-  - [Reference](#reference)
-    - [Commands](#commands)
-      - [`fusion:debugprototype`](#fusiondebugprototype)
-      - [`fusion:showobjecttree`](#fusionshowobjecttree)
-      - [`fusion:lint`](#fusionlint)
-      - [`fusion:listprototypes`](#fusionlistprototypes)
-    - [Configuration](#configuration)
-      - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
-  - [Versioning](#versioning)
-  - [Authors](#authors)
-  - [License](#license)
+- [Overview](#overview)
+- [Installation](#installation)
+  - [Usage outside of Neos](#usage-outside-of-neos)
+  - [Troubleshooting](#troubleshooting)
+    - [`Invalid controller class name "". Make sure your controller is in a folder named "Command" and it's name ends in "CommandController"`](#invalid-controller-class-name--make-sure-your-controller-is-in-a-folder-named-command-and-its-name-ends-in-commandcontroller)
+- [Reference](#reference)
+  - [Commands](#commands)
+    - [`fusion:debugprototype`](#fusiondebugprototype)
+    - [`fusion:showobjecttree`](#fusionshowobjecttree)
+    - [`fusion:lint`](#fusionlint)
+    - [`fusion:listprototypes`](#fusionlistprototypes)
+  - [Configuration](#configuration)
+    - [`fusionFilePathPatterns`](#fusionfilepathpatterns)
+- [Versioning](#versioning)
+- [Authors](#authors)
+- [License](#license)
 
 ## Overview
 
@@ -56,6 +52,7 @@ If composer refuses to install the plugin, try requiring a specific version of i
 The major version of this project will always work with the corresponding Neos release.
 
 ``` bash
+composer require --dev mcstreetguy/fusion-debugger:^8.0   # for Neos v8.x
 composer require --dev mcstreetguy/fusion-debugger:^7.0   # for Neos v7.x
 composer require --dev mcstreetguy/fusion-debugger:^5.0   # for Neos v5.x
 composer require --dev mcstreetguy/fusion-debugger:^4.0   # for Neos v4.x
@@ -87,21 +84,6 @@ Until then we recommend force-clearing the application caches after requiring th
 In some edge cases it might happen that the entire Flow CLI stops working upon installation.
 In that case you are required to manually empty the corresponding `Data/Temporary` directory, that will get Flow running again.
 If you are uncertain which directories to remove, you may also delete the entire directory at once, causing Flow to regenerate it fully.
-
-### Support for older Neos / PHP
-
-The plugin normally is written vor Neos v3.3 and above and in addition makes extensive use of PHP7.1 features.
-To make the functionality available for Neos v3.0-v3.2 and also for older PHP versions like 7.0 and 5.6 the plugin has been backported.
-In that version all type hinting has been replaced by assertions and the composer requirements have been adapted.
-
-To install the backported version you may also require it through composer:
-
-``` bash
-composer require --dev mcstreetguy/fusion-debugger:dev-backport
-```
-
-Please not that this backported version will not be tagged accordingly.
-The backport branch will be kept up with the master as much as possible to provide you latest features, but we cannot guarantee that this will happen simultaneously.
 
 ## Reference
 

@@ -20,6 +20,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function log(string $message)
     {
+        // TODO: remove obsolete method...
         if (FLOW_SAPITYPE === 'CLI') {
             echo $message . PHP_EOL;
         }
@@ -33,6 +34,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function warning(string $message)
     {
+        // TODO: remove obsolete method...
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[33m" . $message . "\033[0m" . PHP_EOL;
         }
@@ -46,6 +48,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function error(string $message)
     {
+        // TODO: remove obsolete method...
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[31m\033[1m" . $message . "\033[0m" . PHP_EOL;
         }
@@ -59,6 +62,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function success(string $message)
     {
+        // TODO: remove obsolete method...
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[32m" . $message . "\033[0m" . PHP_EOL;
         }
@@ -72,6 +76,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function info(string $message)
     {
+        // TODO: remove obsolete method...
         if (FLOW_SAPITYPE === 'CLI') {
             echo "\033[0;36m" . $message . "\033[0m" . PHP_EOL;
         }
@@ -90,6 +95,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function output($text, array $arguments = [])
     {
+        // TODO: remove obsolete method...
         $this->output->output($text, $arguments);
     }
 
@@ -105,6 +111,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputLine($text = '', array $arguments = [])
     {
+        // TODO: remove obsolete method...
         $this->output->outputLine($text, $arguments);
     }
 
@@ -121,6 +128,7 @@ abstract class AbstractCommandController extends CommandController
      */
     protected function outputFormatted($text = '', array $arguments = [], $leftPadding = 0)
     {
+        // TODO: remove obsolete method...
         $this->output->outputFormatted($text, $arguments, $leftPadding);
     }
 

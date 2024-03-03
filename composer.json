@@ -18,8 +18,8 @@
         "email": "maximilianschmidt404@gmail.com"
     },
     "require": {
-        "neos/flow": "^7.0",
-        "neos/fusion": "^7.0"
+        "neos/flow": "^8.0",
+        "neos/fusion": "^8.0"
     },
     "require-dev": {
         "kint-php/kint": "^3.2"
@@ -118,7 +118,14 @@
             "Neos.Flow-20201003165200",
             "Neos.Flow-20201109224100",
             "Neos.Flow-20201205172733",
-            "Neos.Flow-20201207104500"
+            "Neos.Flow-20201207104500",
+            "Neos.Flow-20220318174300",
+            "Neos.Fusion-20220326120900"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "neos/composer-plugin": true
+        }
     }
 }

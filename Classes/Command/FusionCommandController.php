@@ -100,6 +100,7 @@ class FusionCommandController extends AbstractCommandController
                     $fileContents
                 );
 
+                // TODO: rewrite this using the new `parseFromSource` method
                 $this->fusionParser->parse(
                     $normalizedFileContents,
                     $file->getFullPath()
