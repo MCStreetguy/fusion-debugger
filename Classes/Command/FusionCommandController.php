@@ -11,6 +11,8 @@ use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
 use Neos\Flow\Package\PackageManager;
+use Neos\Fusion\Core\FusionSourceCode;
+use Neos\Fusion\Core\FusionSourceCodeCollection;
 use Neos\Fusion\Core\Parser;
 use Neos\Fusion\Core\Runtime;
 
@@ -100,11 +102,9 @@ class FusionCommandController extends AbstractCommandController
                     $fileContents
                 );
 
-                // TODO: rewrite this using the new `parseFromSource` method
-                $this->fusionParser->parse(
-                    $normalizedFileContents,
-                    $file->getFullPath()
-                );
+                $this->fusionParser->parseFromSource(new FusionSourceCodeCollection(
+                    FusionSourceCode::fromDangerousPotentiallyDifferingSourceCodeAndFilePath($normalizedFileContents, $file->getFullPath())
+                ));
             } catch (Exception $e) {
                 $containingPackageKey = $file->getPackageKey();
                 $relativeFilePath = preg_replace(self::RELATIVE_PATH_SUBTRACTOR_PATTERN, '', $file->getFullPath());

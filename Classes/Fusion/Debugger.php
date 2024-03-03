@@ -9,6 +9,7 @@ use MCStreetguy\FusionDebugger\Exceptions\FusionParseErrorException;
 use MCStreetguy\FusionDebugger\Exceptions\MissingPrototypeDefinitionException;
 use MCStreetguy\FusionDebugger\Utility\FusionFileService;
 use Neos\Flow\Annotations as Flow;
+use Neos\Fusion\Core\FusionSourceCodeCollection;
 use Neos\Fusion\Core\Parser;
 use Neos\Utility\Arrays;
 use Neos\Utility\PositionalArraySorter;
@@ -60,7 +61,6 @@ class Debugger
      */
     public function isPrototypeKnown(string $name)
     {
-        // TODO: rewrite to work with the new `Configuration` object returned by `parseFromSource`
         return array_key_exists($name, $this->loadFusionTree()[self::PROTOTYPES_KEY]);
     }
 
@@ -73,7 +73,6 @@ class Debugger
      */
     public function loadPrototype(string $name, bool $returnBare = false)
     {
-        // TODO: rewrite to work with the new `Configuration` object returned by `parseFromSource`
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
 
         if (!array_key_exists($name, $prototypes)) {
@@ -93,7 +92,6 @@ class Debugger
      */
     public function loadAllDefinitions(bool $returnBare = false)
     {
-        // TODO: rewrite to work with the new `Configuration` object returned by `parseFromSource`
         $prototypes = $this->loadFusionTree()[self::PROTOTYPES_KEY];
 
         if ($returnBare === false) {
@@ -113,7 +111,6 @@ class Debugger
      */
     public function getObjectTree(string $path = null)
     {
-        // TODO: rewrite to work with the new `Configuration` object returned by `parseFromSource`
         $objectTree = $this->loadFusionTree();
 
         // Remove the prototypes key as we have seperate methods for that
@@ -133,7 +130,6 @@ class Debugger
      */
     public function getPrototypeNames()
     {
-        // TODO: rewrite to work with the new `Configuration` object returned by `parseFromSource`
         return array_keys($this->loadFusionTree()[self::PROTOTYPES_KEY]);
     }
 
@@ -152,20 +148,16 @@ class Debugger
             return $this->fusionTree;
         }
 
+        $sourceCode = [];
+
         foreach ($this->files->load() as $file) {
-            try {
-                // TODO: rewrite this using the new `parseFromSource` method
-                $this->fusionTree = $this->parser->parse(
-                    $file->getContents(),
-                    $file->getFullPath(),
-                    $this->fusionTree
-                );
-            } catch (\Throwable $e) {
-                throw FusionParseErrorException::forFile($file->getFullPath(), $e);
-            }
+            $sourceCode[] = $file->getFusionSourceCode();
         }
 
-        return $this->fusionTree;
+        $collection = new FusionSourceCodeCollection(...$sourceCode);
+        $configuration = $this->parser->parseFromSource($collection);
+
+        return ($this->fusionTree = $configuration->toArray());
     }
 
     /**

@@ -7,6 +7,7 @@ namespace MCStreetguy\FusionDebugger\Utility;
 
 use MCStreetguy\FusionDebugger\Exceptions\FusionFileException;
 use Neos\Flow\Annotations as Flow;
+use Neos\Fusion\Core\FusionSourceCode;
 
 /**
  * An immutable fusion file representation, containing metadata and tunneling access to file contents.
@@ -168,5 +169,15 @@ class FusionFile
         }
 
         return $this->contents;
+    }
+
+    /**
+     * Get the corresponding `FusionSourceCode` object for this file.
+     *
+     * @return FusionSourceCode
+     */
+    public function getFusionSourceCode()
+    {
+        return FusionSourceCode::fromFilePath($this->fullPath);
     }
 }
